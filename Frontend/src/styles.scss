@@ -1,1 +1,363 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
+@import "~material-design-icons/iconfont/material-icons.css";
+
+// @import '../node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss';
+
+@include mat-core();
+
+$my-app-primary: mat-palette($mat-blue);
+$my-app-light: mat-palette($mat-light-blue);
+$my-app-accent: mat-palette($mat-pink, A200, A100, A400);
+//$my-app-accent:  mat-palette($mat-pink, A200, A100, A400);
+
+$my-app-warn:    mat-palette($mat-red);
+
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+
+@include angular-material-theme($my-app-theme);
+
+$primary-color-dark: #1565c0;
+$primary-color-light: #64b5f6;
+$primary-color: #1e88e5;
+$success: #4caf50;
+$faint-color: #e3f2fd;
+$accent-color: #e91e63;
+$disable-color: #757575;
+$special-btn-color: #673ab7;
+$special-icon-color: #ffea00;
+
+body {
+    padding: 0; 
+    margin: 0; 
+    font-family: Roboto, sans-serif; 
+    height: 100vh;
+    // display: flex;
+    // height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow: visible;
+
+    // @media screen and (min-width: 1225px){
+    //     // overflow: hidden; // disable vertical scrolling
+    //     height: 100%;
+    // }
+
+    // @media (min-width: 481px) and (max-width: 900px) and (orientation: portrait) {
+    //     // overflow: hidden; // disable vertical scrolling
+    //     height: 100%;
+    // }
+
+    // @media (min-width: 824px) and (max-width: 1024px) and (orientation: landscape) {
+    //     // overflow: hidden; // disable vertical scrolling
+    //     height: 100%;
+    // }
+
+    // @media (min-width: 320px) and (max-width: 480px) and (orientation: portrait) {
+    //     // overflow: hidden; // disable vertical scrolling
+    //     height: 100%;
+    //     // overflow-y: none;
+    // }
+
+    // @media (min-width: 481px) and (max-width: 823px) and (orientation:landscape) {
+    //     // overflow: hidden; // disable vertical scrolling
+    //     height: 100%;
+    //     // overflow-y: auto;
+    // }
+}
+
+.backgroundBodyColor {
+    background-color: darkslategray!important;
+}
+
+.absContainer {
+    height: 100vh;
+    overflow: auto; 
+
+
+    @media screen and (min-width: 1225px){
+        // padding-bottom: 30px;
+    }
+
+    @media (min-width: 481px) and (max-width: 900px) and (orientation: portrait) {
+        padding-bottom: 30px;
+    }
+
+    @media (min-width: 824px) and (max-width: 1024px) and (orientation: landscape) {
+        // padding-bottom: 30px;
+    }
+
+    @media (min-width: 320px) and (max-width: 480px) and (orientation: portrait) {
+        padding-bottom: 25%;
+    }
+
+    @media (min-width: 481px) and (max-width: 823px) and (orientation:landscape) {
+        padding-bottom: 25%;
+    }
+}
+
+.background-primary {
+    background-color: $primary-color;
+}
+
+.background-primary-dark {
+    background-color: $primary-color-dark!important;
+}
+
+.background-primary-light {
+    background-color: $primary-color-light!important;
+}
+
+.background-faint {
+    background-color: $faint-color!important;
+}
+
+.background-accent {
+    background-color: $accent-color!important;
+}
+
+.background-special {
+    background-color: $special-btn-color!important;
+}
+
+.background-yellow {
+    background-color: $special-icon-color!important;
+}
+
+
+// .background-disabled-color {
+//     color: $disable-color!important;
+// } 
+
+.border-primary {
+    border: 1px solid $primary-color;
+}
+
+.border-primary-light {
+    border: 1px solid $primary-color-light;
+}
+
+.primary-color {
+    color: $primary-color;
+}
+
+.primary-light-color {
+    color: $primary-color-light;
+}
+
+.primary-dark-color {
+    color: $primary-color-dark;
+}
+
+.special-color {
+    color: $special-icon-color!important;
+}
+
+.background-success {
+    background-color: $success!important;
+}
+
+.text-warn {
+    color: #f44336!important;
+}
+
+.background-warn {
+    background-color: #f44336!important;
+}
+
+.success {
+    color: $success;
+}
+
+// .background-accent {
+//     background-color: $my-app-accent!important;
+// }
+
+.text-floral-white {
+    color: floralwhite!important;
+}
+
+.text-primary-dark {
+    color: $primary-color-dark!important;
+}
+
+.text-primary {
+    color: $primary-color!important;
+}
+
+.flex-spacer {
+    flex: 1 1 auto;
+}
+
+.overflow {
+    overflow-y: auto;
+    overflow: visible;
+}
+
+.custom_container {
+    // overflow: auto;
+    @media screen and (min-width: 1225px){
+        margin-top: 5px;
+        // margin-right: 20px;
+        // margin-left: 20px;
+        margin-bottom: 5px;
+
+        padding-bottom: 30px;
+        padding-right: 20px;
+        padding-left: 20px;
+        // display: flex;
+        // height: 100vh;
+    }
+
+    @media (min-width: 481px) and (max-width: 900px) and (orientation: portrait) {
+        margin-top: 5px;
+        margin-right: 15px;
+        margin-left: 15px;
+        margin-bottom: 5px;
+        display: flex;
+    }
+
+    @media (min-width: 824px) and (max-width: 1024px) and (orientation: landscape) {
+        margin-top: 5px;
+        margin-right: 15px;
+        margin-left: 15px;
+        margin-bottom: 5px;
+        display: flex;
+    }
+
+    @media (min-width: 320px) and (max-width: 480px) and (orientation: portrait) {
+        margin-top: 5px;
+        margin-right: 5px;
+        margin-left: 5px;
+        margin-bottom: 5px;
+        display: flex;
+    }
+
+    @media (min-width: 481px) and (max-width: 823px) and (orientation:landscape) {
+        margin-top: 5px;
+        margin-right: 15px;
+        margin-left: 15px;
+        margin-bottom: 5px;
+        display: flex;
+    }
+    
+}
+
+.custom_container1 {
+    @media screen and (min-width: 1225px){
+        // height: 100vh;
+        margin-right: 15px;
+        margin-left: 15px;
+        // margin-top: 60px;
+        margin-bottom: 15px;
+        // display: absolute;
+        // top: 0;
+        // bottom: 0;
+        flex: 1;
+    }
+}
+
+.lead {
+    color: #808080;
+}
+
+.short {
+    width: 40px;
+}
+
+.justify {
+    text-align: justify;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.small-font-size {
+    font-size: 17px;
+}
+
+strong{
+    font-weight:bold;
+}
+
+// .circle-container {
+//     border-radius: 50%;
+//     border: 1px solid black;
+//     height: 200px;
+//     width: 200px;
+//     display: block;
+//     background-image: url('assets/profilephotos/generic-avatar.png');
+// }
+
+.mobilevisible {
+    @media screen and (min-width: 1225px) {
+        display: none
+    }
+    @media (min-width: 768px) and (max-width: 1224px) {
+        display: none;
+    }
+    @media (min-width: 320px) and (max-width: 480px) {
+        display: block;
+    }
+}
+
+.desktopvisible {
+    @media screen and (min-width: 1225px) {
+        display: block
+    }
+    @media (min-width: 768px) and (max-width: 1224px) {
+        display: block;
+    }
+    @media (min-width: 320px) and (max-width: 480px) {
+        display: none;
+    }
+}
+
+.buttonwidth {
+    width: 120px;
+}
+
+// .profile-photo {
+//     display: inline-block;
+//     border-radius: 50%;
+    
+// }
+
+.spinner {
+    @media screen and (min-width: 1225px) {
+        margin-top: 15%;
+        // margin-left: 2%;
+    }
+}
+
+.autoHeight {
+    height: auto;
+}
+
+// custom scrollbar
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: $faint-color!important;
+    border-radius: 10px;
+  }
+  
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: $primary-color!important;
+    border-radius: 10px;
+}  
+::-webkit-scrollbar-thumb:hover {
+    background: $primary-color!important;
+    border-radius: 10px;
+}
+
+.mat-select-scrollbar-thumb {
+    background: $primary-color!important;
+    border-radius: 10px;
+}
+// ends here

@@ -4,22 +4,36 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-// import { MatButtonModule, MatCheckboxModule, MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatSidenavModule,
-//   MatInputModule, MatRadioModule, MatSelectModule, MatSliderModule, MatTooltipModule, MatSortModule, MatExpansionModule,
-//   MatSlideToggleModule, MatToolbarModule, MatListModule, MatGridListModule, MatSnackBarModule, MatPaginatorModule, MatTabsModule,
-//   MatCardModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule, MatTableModule, MatAutocompleteModule, MatProgressBarModule,
-//   MatChipsModule, MatMenuModule } from '@angular/material';
-// import { MatButton} from '@angular/material/button';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RestangularModule, Restangular } from 'ngx-restangular';
 import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+
+import {baseDomain, baseURL} from './shared/baseurl';
+import { RestangularConfigFactory } from './shared/restConfig';
+
+import { ProcessHttpmsgService } from './services/process-httpmsg.service';
+import { AuthService } from './services/auth.service';
+import { CookieService } from 'ngx-cookie-service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { LoginComponent } from './login/login.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -28,16 +42,23 @@ import { AppComponent } from './app.component';
     FormsModule,
     HttpModule,
     HttpClientModule,
-    // MatButtonModule, MatCheckboxModule, MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatSidenavModule,
+    MatButtonModule, MatCardModule, MatToolbarModule, MatFormFieldModule, MatInputModule, MatSnackBarModule,
+    // MatCheckboxModule, MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatSidenavModule,
     // MatInputModule, MatRadioModule, MatSelectModule, MatSliderModule, MatTooltipModule, MatSortModule, MatChipsModule,
     // MatSlideToggleModule, MatToolbarModule, MatListModule, MatGridListModule, MatSnackBarModule, MatPaginatorModule,
-    // MatCardModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule, MatTableModule, MatExpansionModule,
+    //  MatIconModule, MatProgressSpinnerModule, MatDialogModule, MatTableModule, MatExpansionModule,
     // MatAutocompleteModule, MatProgressBarModule, MatTabsModule, MatMenuModule,
     FlexLayoutModule,
     ReactiveFormsModule,
-    LoadingBarHttpClientModule
+    LoadingBarHttpClientModule,
+    RestangularModule.forRoot(RestangularConfigFactory),
   ],
-  providers: [],
+  providers: [
+    { provide: 'BaseURL', useValue: baseURL },
+    ProcessHttpmsgService,
+    AuthService,
+    CookieService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

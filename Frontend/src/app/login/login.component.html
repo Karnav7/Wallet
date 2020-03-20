@@ -1,1 +1,144 @@
-<p>login works!</p>
+<mat-toolbar style="width: 100%;" class="background-primary-dark">
+  <!-- <span fxFlex="40"></span> -->
+  <h3 align="center" class="text-floral-white">Welcome to Wallet!</h3>
+  <!-- <span class="flex-spacer"></span> -->
+</mat-toolbar>
+<div style="width: 100%; height: 100%;" class="overflow" fxLayout="column" fxLayoutAlign="top center">
+    
+  <!-- <div fxLayout="row" fxLayoutAlign="center center"> -->
+    <mat-card class="loginform" *ngIf="showSignUp === false">
+      <mat-card-title>
+          <h2 align="center">{{title}}</h2>
+      </mat-card-title>
+      <mat-card-content>
+        <div fxLayout="column" fxLayoutAlign="top center" fxLayoutGap="5px">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Kindly Enter Mobile Number</mat-label>
+            <input matInput (keypress)="numberOnly($event)" placeholder="{{mobPlaceHolder}}" [(ngModel)]="mobileNo" [formControl]="mobileNoControl" [errorStateMatcher]="matcher" minlength="10" maxlength="10" pattern="[0-9]*" required>
+            <mat-error *ngIf="mobileNoControl.hasError('required')">
+              Mobile Number field is required
+            </mat-error>
+            <mat-error *ngIf="mobileNoControl.hasError('minlength')">
+              Kindly enter 10 digit mobile number.
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Kindly Enter Password</mat-label>
+            <input matInput type="password" [(ngModel)]="password" [formControl]="passwordControl" [errorStateMatcher]="matcher" minlength="3" maxlength="25" required>
+            <mat-error *ngIf="passwordControl.hasError('required')">
+              Password is required.
+            </mat-error>
+            <mat-error *ngIf="passwordControl.hasError('minlength')">
+              Minimum length of password must be 3 characters.
+            </mat-error>
+            <mat-error *ngIf="passwordControl.hasError('maxlength')">
+              Password cannot exceeed more than 25 characters.
+            </mat-error>
+          </mat-form-field>
+
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <button mat-raised-button type="button" class="background-primary" (click)="login()" [disabled]="mobileNoControl.invalid || passwordControl.invalid">
+              <span class="text-floral-white">Login</span>
+            </button>
+          </div>
+          <br>
+          <div style="width: 100%;" fxLayout="row" fxLayoutAlign="end center">
+            <p>Are you New User?</p>&nbsp;
+            <button mat-raised-button type="button" class="background-primary" (click)="showSignUpForm()">
+              <span class="text-floral-white">Sign up</span>
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="loginform" *ngIf="showSignUp === true">
+      <mat-card-title>
+        <h2 align="center">{{title}}</h2>
+      </mat-card-title>
+
+      <mat-card-content>
+        <div fxLayout="column" fxLayoutAlign="top center" fxLayoutGap="5px">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Kindly Enter your 10-digit SSN</mat-label>
+            <input matInput type="text" (keypress)="numberOnly($event)" placeholder="Only Numbers are allowed" [(ngModel)]="SSN" [formControl]="ssnControl" [errorStateMatcher]="matcher" minlength="10" maxlength="10" pattern="[0-9]*" required>
+            <mat-error *ngIf="ssnControl.hasError('required')">
+              SSN field is required
+            </mat-error>
+            <mat-error *ngIf="ssnControl.hasError('minlength')">
+              Kindly enter 10 digit SSN.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Kindly Enter your Full Name</mat-label>
+            <input matInput type="text" [(ngModel)]="Name" [formControl]="nameControl" [errorStateMatcher]="matcher" minlength="3" maxlength="30" required>
+            <mat-error *ngIf="nameControl.hasError('required')">
+              Name field is required.
+            </mat-error>
+            <mat-error *ngIf="nameControl.hasError('minlength')">
+              Atleast 3 characters are required.
+            </mat-error>
+            <mat-error *ngIf="nameControl.hasError('maxLength')">
+              Maximum 30 characters are allowed.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" [(ngModel)]="sPassword" [formControl]="sPasswordControl" [errorStateMatcher]="matcher" minlength="3" maxlength="20" required>
+            <mat-error *ngIf="sPasswordControl.hasError('required')">
+              Password Field is required.
+            </mat-error>
+            <mat-error *ngIf="sPasswordControl.hasError('minLength')">
+              Atleast 3 characters are required.
+            </mat-error>
+            <mat-error *ngIf="sPasswordControl.hasError('maxLength')">
+              Maximum 20 characters are allowed.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Confirm Password</mat-label>
+            <input matInput type="password" [(ngModel)]="scPassword" [formControl]="scPasswordControl" [errorStateMatcher]="matcher" minlength="3" maxlength="20" required>
+            <mat-error *ngIf="scPasswordControl.hasError('required')">
+              Confirm Password Field is required.
+            </mat-error>
+            <mat-error *ngIf="scPasswordControl.hasError('minLength')">
+              Atleast 3 characters are required.
+            </mat-error>
+            <mat-error *ngIf="scPasswordControl.hasError('maxLength')">
+              Maximum 20 characters are allowed.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Kindly Enter Mobile Number</mat-label>
+            <input matInput (keypress)="numberOnly($event)" placeholder="Only numbers are allowed" [(ngModel)]="smobileNo" [formControl]="smobileNoControl" [errorStateMatcher]="matcher" minlength="10" maxlength="10" pattern="[0-9]*" required>
+            <mat-error *ngIf="smobileNoControl.hasError('required')">
+              Mobile Number field is required
+            </mat-error>
+            <mat-error *ngIf="smobileNoControl.hasError('minlength')">
+              Kindly enter 10 digit mobile number.
+            </mat-error> 
+          </mat-form-field>
+
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <button mat-raised-button type="button" class="background-primary" (click)="signup()" [disabled]="ssnControl.invalid || nameControl.invalid || sPasswordControl.invalid || scPasswordControl.invalid || smobileNoControl.invalid">
+              <span class="text-floral-white">SignUp</span>
+            </button>
+          </div>
+          <br>
+          <div style="width: 100%;" fxLayout="row" fxLayoutAlign="end center">
+            <p>Are you Existing User?</p>&nbsp;
+            <button mat-raised-button type="button" class="background-primary" (click)="showLoginForm()">
+              <span class="text-floral-white">Login</span>
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  <!-- </div> -->
+</div>
+

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const mysql = require('mysql');
 const pool = require('../pool');
+const cors = require('../cors');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -9,7 +10,7 @@ router.get('/', function(req, res, next) {
 });
 
 // User Signup
-router.post('/signup', (req, res, next) => {
+router.post('/signup', cors.corsWithOptions, (req, res, next) => {
   console.log('req', req.body);
 
   pool.getConnection((err, connection) => {
@@ -32,6 +33,8 @@ router.post('/signup', (req, res, next) => {
       }
   
       if (result.length) {
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
         res.json({success: false, status: 'user exists'});
         connection.release();
       } else {
@@ -127,7 +130,7 @@ router.post('/signup', (req, res, next) => {
 });
 
 // User Login
-router.post('/login', (req, res, next) => {
+router.post('/login', cors.corsWithOptions, (req, res, next) => {
   console.log('req: ', req);
 
   pool.getConnection((err, connection) => {
@@ -159,13 +162,13 @@ router.post('/login', (req, res, next) => {
           res.json({user: result[0], success: true, status: 'Login successful!'});
           connection.release();
         } else {
-          res.statusCode = 403;
+          res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
           res.json({success: false, status: 'Wrong Password!'});
           connection.release();
         }
       } else {
-        res.statusCode = 403;
+        res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({success: false, status: 'User not found!'});
         connection.release();

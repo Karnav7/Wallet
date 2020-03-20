@@ -1,0 +1,21 @@
+.loginform {
+    @media screen and (min-width: 720px){
+        margin-top: 5%;
+        width: 70%;
+    }
+
+    @media screen and (max-width: 719px) {
+        margin-top: 5%;
+        width: 85%;
+    }
+}
+
+.full-width {
+    @media screen and (min-width: 720px) {
+        width: 60%;
+    }
+
+    @media screen and (max-width: 719px) {
+        width: 80%;
+    }
+}
