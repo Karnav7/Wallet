@@ -1,0 +1,189 @@
+<mat-toolbar style="width: 100%;" class="background-primary-dark">
+    <span class="text-floral-white">WALLET</span>
+    <span class="flex-spacer"></span>
+    <span class="text-floral-white">{{username}}</span>
+    <button mat-icon-button [matMenuTriggerFor]="toolbarMenu">
+        <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #toolbarMenu="matMenu">
+        <button mat-menu-item>
+            <mat-icon>person</mat-icon>
+            <span> Profile</span>
+        </button>
+        <button mat-menu-item (click)="signOut()">
+            <mat-icon>exit_to_app</mat-icon>
+            <!-- <i class="fa fa-sign-out-alt"></i> -->
+            <span> Sign out</span>
+        </button>
+    </mat-menu>
+</mat-toolbar>
+<div style="width: 100%; height: 100%;" class="overflow" fxLayout="column" fxLayoutAlign="top center">
+    <div *ngIf="user" style="width: 95%;" fxLayout="row" fxLayoutAlign="center top" fxLayoutGap="10px">
+        <mat-card style="width: 100%;">
+            <mat-card-title>
+                <h3 align="center">Personal Details</h3>
+            </mat-card-title>
+    
+            <mat-card-content>
+                <mat-accordion>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                SSN
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Click here to edit SSN
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <mat-form-field style="width: 100%;" appearance="outline">
+                            <mat-label>SSN</mat-label>
+                            <input matInput type="text" value="{{user.SSN}}" (keypress)="numberOnly($event)" placeholder="Only Numbers are allowed" [(ngModel)]="SSN" [formControl]="ssnControl" [errorStateMatcher]="matcher" minlength="10" maxlength="10" pattern="[0-9]*">
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditSSN === false" (click)="editSSN()">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditSSN === true" (click)="saveSSN()">
+                                <mat-icon>save</mat-icon>
+                            </button>
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditSSN === true" (click)="cancelSSN()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                            <mat-error *ngIf="ssnControl.hasError('minlength')">
+                                Kindly enter 10 digit SSN.
+                            </mat-error>
+                        </mat-form-field>
+                    </mat-expansion-panel>
+
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Name
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Click here to edit Name
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <mat-form-field style="width: 100%" appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input matInput type="text" value="{{user.Name}}" [(ngModel)]="Name" [formControl]="nameControl" [errorStateMatcher]="matcher" minlength="3" maxlength="30">
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditName === false" (click)="editName()">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditName === true" (click)="saveName()">
+                                <mat-icon>save</mat-icon>
+                            </button>
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditName === true" (click)="cancelName()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                            <mat-error *ngIf="nameControl.hasError('minlength')">
+                                Minimum characters for Name should be 3.
+                            </mat-error>
+                        </mat-form-field>
+                    </mat-expansion-panel>
+
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Password
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Click here to edit Password
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <mat-form-field style="width: 100%;" appearance="outline">
+                            <mat-label>Password</mat-label>
+                            <input matInput type="password" value="{{user.Password}}" [(ngModel)]="Password" [formControl]="passwordControl" [errorStateMatcher]="matcher" minlength="3" maxlength="20">
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditPassword === false" (click)="editPassword()">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditPassword === true" (click)="savePassword()">
+                                <mat-icon>save</mat-icon>
+                            </button>
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditPassword === true" (click)="cancelPassword()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                            <mat-error *ngIf="passwordControl.hasError('minlength')">
+                                Minimum characters for Password should be 3.
+                            </mat-error>
+                        </mat-form-field>
+                    </mat-expansion-panel>
+
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Phone Number
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Click here to edit Phone Number
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        <mat-form-field style="width: 100%;" appearance="outline">
+                            <mat-label>Phone Number</mat-label>
+                            <input matInput type="text" value="{{user.PhoneNo}}" (keypress)="numberOnly($event)" placeholder="Only Numbers are allowed" [(ngModel)]="PhoneNo" [formControl]="phoneControl" [errorStateMatcher]="matcher" minlength="10" maxlength="10" pattern="[0-9]*">
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditPhoneNo === false" (click)="editPhoneNo()">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditPhoneNo === true" (click)="savePhoneNo()">
+                                <mat-icon>save</mat-icon>
+                            </button>
+                            <button mat-button mat-icon-button matSuffix *ngIf="isEditPhoneNo === true" (click)="cancelPhoneNo()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                            <mat-error *ngIf="phoneControl.hasError('minlength')">
+                                Phone Number must be of 10 digits.
+                            </mat-error>
+                        </mat-form-field>
+                    </mat-expansion-panel>
+
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Email ID
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Click here to edit Email Id
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    </mat-expansion-panel>
+
+                </mat-accordion>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card style="width: 100%;">
+            <mat-card-title>
+                <h3 align="center">Bank Details</h3>
+            </mat-card-title>
+    
+            <mat-card-content>
+                <mat-accordion>
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Primary Bank
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Click here to edit Primary Bank
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    </mat-expansion-panel>
+
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                Secondary Bank
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                Click here to edit Secondary Bank
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    
+</div>

@@ -11,6 +11,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -28,12 +31,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -43,6 +48,7 @@ import { HomeComponent } from './home/home.component';
     HttpModule,
     HttpClientModule,
     MatButtonModule, MatCardModule, MatToolbarModule, MatFormFieldModule, MatInputModule, MatSnackBarModule,
+    MatMenuModule, MatIconModule, MatExpansionModule,
     // MatCheckboxModule, MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatSidenavModule,
     // MatInputModule, MatRadioModule, MatSelectModule, MatSliderModule, MatTooltipModule, MatSortModule, MatChipsModule,
     // MatSlideToggleModule, MatToolbarModule, MatListModule, MatGridListModule, MatSnackBarModule, MatPaginatorModule,

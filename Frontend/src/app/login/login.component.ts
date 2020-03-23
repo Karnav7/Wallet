@@ -80,10 +80,13 @@ export class LoginComponent implements OnInit {
     Name: '',
     Password: '',
     PhoneNo: null,
+    PhoneVerified: false,
+    EmailIds: null,
     Balance: null,
     PBAVerified: false,
     BankID: null,
-    BANumber: null
+    BANumber: null,
+    AddBankAccs: null
   };
 
   constructor(
@@ -106,9 +109,9 @@ export class LoginComponent implements OnInit {
       if ( data.success === true ) {
         this.user = data.user;
 
-        this.cookieService.set('Id', data.user.SSN, 30, '/', baseDomain);
-        this.cookieService.set('Name', data.user.Name, 30, '/', baseDomain);
-        this.cookieService.set('MobileNo', data.user.PhoneNo, 30, '/', baseDomain);
+        this.cookieService.set('Id', data.user.SSN, 30, '/', '', false);
+        this.cookieService.set('Name', data.user.Name, 30, '/', '', false);
+        this.cookieService.set('MobileNo', data.user.PhoneNo, 30, '/', '', false);
 
         this.router.navigate(['/home']).then(() => {
           this.snackBar.open('Welcome to Wallet, '  + data.user.Name + '!', 'OK', {
@@ -141,9 +144,9 @@ export class LoginComponent implements OnInit {
         if ( data.success === true ) {
           this.user = data.user;
 
-          this.cookieService.set('Id', data.user.SSN, 30, '/', baseDomain);
-          this.cookieService.set('Name', data.user.Name, 30, '/', baseDomain);
-          this.cookieService.set('MobileNo', data.user.PhoneNo, 30, '/', baseDomain);
+          this.cookieService.set('Id', data.user.SSN, 30, '/', '', false);
+          this.cookieService.set('Name', data.user.Name, 30, '/', '', false);
+          this.cookieService.set('MobileNo', data.user.PhoneNo, 30, '/', '', false);
 
           this.router.navigate(['/home']).then(() => {
             this.snackBar.open('Welcome to Wallet, '  + data.user.Name + '!', 'OK', {

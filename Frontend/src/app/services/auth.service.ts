@@ -23,10 +23,13 @@ export class AuthService {
     Name: '',
     Password: '',
     PhoneNo: null,
+    PhoneVerified: false,
+    EmailIds: null,
     Balance: null,
     PBAVerified: false,
     BankID: null,
-    BANumber: null
+    BANumber: null,
+    AddBankAccs: null
   }
 
   constructor(
@@ -54,5 +57,31 @@ export class AuthService {
         // debugger;
         return this.processHTTPMsgService.handleError(error);
       }));
+  }
+
+  getSingleUserBySSN(): Observable<any> {
+    const SSN = this.cookieService.get('Id');
+
+    return this.http.get(baseURL + 'users/' + SSN)
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  }
+
+  updateSingleUserBySSN(data): Observable<any> {
+    let SSN = '';
+    if ( data.key === 'PhoneNo' ) {
+      SSN = this.cookieService.get('MobileNo');
+    } else {
+      SSN = this.cookieService.get('Id');
+    }
+    
+
+    return this.http.put(baseURL + 'users/' + SSN, data)
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
   }
 }
