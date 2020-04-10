@@ -147,6 +147,59 @@
                                 Click here to edit Email Id
                             </mat-panel-description>
                         </mat-expansion-panel-header>
+
+                        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+                            <mat-form-field *ngIf="emailIds.length > 0" style="width: 100%;" appearance="outline">
+                                <mat-label>Select EmailID</mat-label>
+                                <mat-select (selectionChange)="onEmailIdSelect($event.value)">
+                                    <mat-option *ngFor="let emailid of emailIds" [value]="emailid">
+                                        {{emailid.EmailAdd}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px" *ngIf="showEmailEditPanel === true" style="width: 100%;">
+                            
+                                <mat-form-field style="width: 85%;" appearance="outline">
+                                    <mat-label>Edit/Delete Email</mat-label>
+                                    <input matInput type="email" value="{{emailInterface.EmailAdd}}" [(ngModel)]="email" [formControl]="emailControl" [errorStateMatcher]="matcher">
+                                    <div matSuffix fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="2px">
+                                        <button mat-button mat-icon-button *ngIf="isEditEmail === false" (click)="editEmail()">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button mat-button mat-icon-button *ngIf="isEditEmail === false" (click)="deleteEmail()">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                        <button mat-button mat-icon-button *ngIf="isEditEmail === true" (click)="saveEmail()">
+                                            <mat-icon>save</mat-icon>
+                                        </button>
+                                        <button mat-button mat-icon-button *ngIf="isEditEmail === true" (click)="cancelEmail()">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </div>
+                                    <mat-error *ngIf="emailControl.hasError('pattern')">
+                                        Kindly enter valid email id.
+                                    </mat-error>
+                                </mat-form-field>
+
+                                <mat-checkbox style="width: 15%;" [checked]="emailChecked" [disabled]="emailCbDisabled" [(ngModel)]="emailCbValue" (change)="onClickVerify()">
+                                    Verified
+                                </mat-checkbox>
+                            </div>
+
+                            
+
+                            <mat-form-field *ngIf="emailIds.length < 3" style="width: 100%;" appearance="outline">
+                                <mat-label>Add New Email ID</mat-label>
+                                <input type="email" #emailAddID matInput [(ngModel)]="emailAdd" [formControl]="emailAddControl" [errorStateMatcher]="matcher">
+                                <button mat-button matSuffix mat-icon-button *ngIf="emailAddID.value.length > 3" (click)="saveEmailAdd()">
+                                    <mat-icon>save</mat-icon>
+                                </button>
+                                <mat-error *ngIf="emailAddControl.hasError('pattern')">
+                                    Kindly enter valid email id.
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
                     </mat-expansion-panel>
 
                 </mat-accordion>

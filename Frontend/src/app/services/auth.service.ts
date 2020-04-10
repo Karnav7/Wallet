@@ -41,10 +41,10 @@ export class AuthService {
 
   login(user: User): Observable<any> {
     console.log('user', user);
-    // debugger;
-    return this.http.post(baseURL + 'users/login', user)
+    debugger;
+    return this.http.post(baseURL + 'login', user)
       .pipe(map(res => res), catchError(error => {
-        // debugger;
+        debugger;
         return this.processHTTPMsgService.handleError(error);
       }));
   }
@@ -52,7 +52,7 @@ export class AuthService {
   signup(user: User): Observable<any> {
     console.log('user: ', user);
 
-    return this.http.post(baseURL + 'users/signup', user)
+    return this.http.post(baseURL + 'signup', user)
       .pipe(map(res => res), catchError(error => {
         // debugger;
         return this.processHTTPMsgService.handleError(error);
@@ -79,6 +79,55 @@ export class AuthService {
     
 
     return this.http.put(baseURL + 'users/' + SSN, data)
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  }
+
+  updateSingleEmailIDByID(data): Observable<any> {
+    console.log('id: ', data.id);
+
+    return this.http.put(baseURL + 'users/' + data.id, data)
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  }
+
+  deleteSingleEmailIDByID(data): Observable<any> {
+    console.log('id: ', data.id);
+
+    // const options = {
+    //   body: {key: data.key}
+    // };
+    const params = new HttpParams().set('key', 'EmailAdd');
+
+    return this.http.delete(baseURL + 'users/' + data.id, {params})
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  }
+
+  //Check for duplicate enrty of emailId in DB
+  checkEmail(email, ssn): Observable<any> {
+
+    const params = new HttpParams().set('emailid', email);
+
+    return this.http.get(baseURL + 'users/' + ssn, {params})
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  }
+
+  // Add new email id
+  addNewEmail(emailObject): Observable<any> {
+
+    const params = new HttpParams().set('key', 'EmailAdd');
+
+    return this.http.post(baseURL + 'users/' + emailObject.SSN, emailObject,  {params})
     .pipe(map(res => res), catchError(error => {
       // debugger;
       return this.processHTTPMsgService.handleError(error);

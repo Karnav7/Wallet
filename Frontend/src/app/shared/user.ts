@@ -13,8 +13,9 @@ export interface User {
 }
 
 export interface email  {
+    id: number,
     EmailAdd: string;
-    Verified: boolean;
+    Verified: number;   // boolean key
 }
 
 export interface AddBankAccs {

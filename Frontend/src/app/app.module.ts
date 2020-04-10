@@ -14,6 +14,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -48,12 +50,7 @@ import { ProfileComponent } from './profile/profile.component';
     HttpModule,
     HttpClientModule,
     MatButtonModule, MatCardModule, MatToolbarModule, MatFormFieldModule, MatInputModule, MatSnackBarModule,
-    MatMenuModule, MatIconModule, MatExpansionModule,
-    // MatCheckboxModule, MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatSidenavModule,
-    // MatInputModule, MatRadioModule, MatSelectModule, MatSliderModule, MatTooltipModule, MatSortModule, MatChipsModule,
-    // MatSlideToggleModule, MatToolbarModule, MatListModule, MatGridListModule, MatSnackBarModule, MatPaginatorModule,
-    //  MatIconModule, MatProgressSpinnerModule, MatDialogModule, MatTableModule, MatExpansionModule,
-    // MatAutocompleteModule, MatProgressBarModule, MatTabsModule, MatMenuModule,
+    MatMenuModule, MatIconModule, MatExpansionModule, MatSelectModule, MatCheckboxModule,
     FlexLayoutModule,
     ReactiveFormsModule,
     LoadingBarHttpClientModule,
