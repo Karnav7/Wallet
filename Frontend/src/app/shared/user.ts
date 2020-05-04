@@ -22,4 +22,5 @@ export interface AddBankAccs {
     BankID: number;
     BANumber: number;
     Verified: boolean;
+    BankName: string;
 }

@@ -4,7 +4,8 @@ import { RouterModule, Routes, Router } from '@angular/router';
 import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 
-import { User, email } from '../shared/user';
+import { User, email, AddBankAccs } from '../shared/user';
+import { BankList, BankListInterface } from '../shared/bankList';
 
 import { AuthService } from '../services/auth.service';
 import { CookieService } from 'ngx-cookie-service';
@@ -44,6 +45,12 @@ export class ProfileComponent implements OnInit {
   };
 
   emailIds: email[] = [];
+  bankListInterface: BankListInterface = {
+    BankID: null,
+    BankName: null
+  };
+  bankList = BankList;
+
 
   username: string;
   SSN: number;
@@ -52,6 +59,8 @@ export class ProfileComponent implements OnInit {
   PhoneNo: number;
   email: string;
   emailAdd: string;
+  BankAccNo: number;
+  SecondaryBankAccNo: number;
 
   disableSSN: boolean = true;
   disableName: boolean = true;
@@ -69,6 +78,12 @@ export class ProfileComponent implements OnInit {
   emailChecked: boolean = false;
   emailCbDisabled: boolean = true;
   emailCbValue: boolean = false;
+  PBAChecked: boolean = false;
+  PBACbDisabled: boolean = false;
+  PBACbValue: boolean = false;
+
+  selectedBank: BankListInterface = null;
+  selectedSecondaryBank: BankListInterface = null;
 
   ssnControl = new FormControl({value: this.SSN, disabled: this.disableSSN}, [
     Validators.pattern('[0-9]*'),
@@ -112,6 +127,12 @@ export class ProfileComponent implements OnInit {
             this.emailIds.push(email);
           });
           console.log('emails: ', this.emailIds);
+        }
+
+        if ( this.user.AddBankAccs.length > 0 ) {
+          this.user.AddBankAccs.forEach((bank) => {
+            bank.BankName = this.getBankName(bank.BankID);
+          });
         }
       }
     });
@@ -485,6 +506,155 @@ export class ProfileComponent implements OnInit {
       Validators.pattern(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)
     ]);
 
+  }
+
+  PBAonClickVerify(){}
+
+  // Add new Primary Bank Account
+  addPBA(){
+    console.log("yo", this.user.BANumber);
+    console.log("id ", this.selectedBank.BankID);
+    console.log("accNo: ", this.BankAccNo);
+
+    if ( this.PBACbValue === false ) {
+      let snackbar = this.snackBar;
+      snackbar.open('Click on Verify to verify your bank account!', 'Verify', {
+        duration: 5000
+      }).onAction().subscribe(() => {
+        this.authService.addNewPBA({SSN: this.user.SSN, BankID: this.selectedBank.BankID, BANumber: this.BankAccNo, PBAVerified: true}).subscribe((data) => {
+          console.log('data ', data);
+          if ( data.success === true ) {
+            this.user.BankID = this.selectedBank.BankID;
+            this.user.PBAVerified = true;
+            this.PBACbValue = true;
+            this.user.BANumber = this.BankAccNo;
+            this.PBACbValue = true;
+            this.snackBar.open('Primary Bank Account added!', 'OK', {
+              duration: 3000
+            });
+          } else {
+            this.snackBar.open('Error in adding Primary Bank Account, try again!', 'OK', {
+              duration: 3000
+            });
+          }
+        });
+      });
+    }
+  }
+
+  deletePBA(){
+    let sncakbar = this.snackBar;
+    sncakbar.open('Are you sure?' , 'Yes', {
+      duration: 3000
+    }).onAction().subscribe(() => {
+      this.authService.deletePBA({SSN: this.user.SSN, BankID: this.user.BankID, BANumber: this.user.BANumber}).subscribe((data) => {
+        if ( data.success === true ) {
+          this.user.BANumber = null;
+          this.user.BankID = null;
+          this.user.PBAVerified = false;
+          this.PBACbValue = false;
+          this.snackBar.open('Primary Bank Account deleted succesfully!', 'OK', {
+            duration: 3000
+          });
+        } else {
+          this.snackBar.open('Error in deleting Primary bank Account, try again!', 'OK', {
+            duration: 3000
+          });
+        }
+      });
+    });
+  }
+
+  private getBankName(id: number): string {
+    let val = '';
+    this.bankList.forEach((bank) => {
+      if ( bank.BankID === id ) {
+        val = bank.BankName;
+      }
+    });
+    console.log('val ', val);
+    return val;
+  }
+
+  // Add Secondary Bank Account
+  addSBA() {
+    console.log("id ", this.selectedSecondaryBank.BankID);
+    console.log("accNo: ", this.SecondaryBankAccNo);
+
+    this.authService.addNewSBA({SSN: this.user.SSN, BankID: this.selectedSecondaryBank.BankID, BANumber: this.SecondaryBankAccNo}).subscribe((data) => {
+      if ( data.success === true ) {
+        let x = this.getBankName(this.selectedSecondaryBank.BankID);
+        console.log('bank name: ', x);
+        this.user.AddBankAccs.push({BankID: this.selectedSecondaryBank.BankID, BANumber: this.SecondaryBankAccNo, Verified: false, BankName: this.getBankName(this.selectedSecondaryBank.BankID)});
+        this.SecondaryBankAccNo = null; this.selectedSecondaryBank = null;
+        this.snackBar.open('Added successfully!', 'OK', {
+          duration: 3000
+        });
+      } else {
+        if ( data.msg === 'error') {
+          this.snackBar.open('Failed to add, try again!', 'OK', {
+            duration: 3000
+          });
+        } else if ( data.msg === 'duplicate' ) {
+          this.snackBar.open('This account is already in use, Kindly add different account!', 'OK', {
+            duration: 5000
+          });
+        }
+      }
+    });
+  }
+
+  // delete Secondary Bank Account
+  deleteSBA(bank: AddBankAccs) {
+    let snackbar = this.snackBar;
+    snackbar.open('Are you sure?', 'Yes', {
+      duration: 5000
+    }).onAction().subscribe(() => {
+      console.log(this.user.AddBankAccs);
+      this.authService.deleteSBA({SSN: this.user.SSN, BankID: bank.BankID, BANumber: bank.BANumber}).subscribe((data) => {
+        if ( data.success === true ) {
+          this.user.AddBankAccs.forEach((bank1, index) => {
+            if ( bank1.BankID === bank.BankID && bank1.BANumber === bank.BANumber ) {
+              this.user.AddBankAccs.splice(index, 1);
+            }
+          });
+          this.snackBar.open('Bank Account removed successfully!', 'Ok', {
+            duration: 3000
+          });
+        } else {
+          this.snackBar.open('Failed, try again!', 'OK', {
+            duration: 3000
+          });
+        }
+      });
+    });
+    
+  }
+
+  // Verify Secondary Bank Account
+  verifySBA(bank: AddBankAccs) {
+    let obj = {
+      SSN: this.user.SSN,
+      key: 'sbaVerified',
+      BankID: bank.BankID,
+      BANumber: bank.BANumber
+    };
+    this.authService.verifySBA(obj).subscribe((data) => {
+      if( data.success === true ) {
+        this.user.AddBankAccs.forEach((bank1) => {
+          if ( bank1.BankID === bank.BankID && bank1.BANumber === bank.BANumber ) {
+            bank1.Verified = true;
+          }
+        });
+        this.snackBar.open('Bank Account Verified successfully!', 'OK', {
+          duration: 3000
+        });
+      } else {
+        this.snackBar.open('Failed to verify, try again!', 'OK', {
+          duration: 3000
+        });
+      }
+    });
   }
 }
 

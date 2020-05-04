@@ -114,7 +114,7 @@ router.get('/:userId', cors.corsWithOptions, async (req, res, next) => {
 
             console.log('emailResult: ', emailResult);
             await connection.query({
-              sql: 'select BankId, BANumber, Verified from Has_Additional where SSN=' + req.params.userId,
+              sql: 'select BankID, BANumber, Verified from Has_Additional where SSN=' + req.params.userId,
               timeout: 60000
             }, (err4, addBankAccResult) => {
               if ( err4 ) {
@@ -192,6 +192,131 @@ router.get('/:userId', cors.corsWithOptions, async (req, res, next) => {
         }
         connection.release();
       });
+    } else if ( req.query.key === 'pbaAdd' ) {
+      await connection.query({
+        // sql: 'update User_Account set BankID=' + req.body.BankID + ',BANumber=' + req.body.BANumber +
+          // ',PBAVerified=' + req.body.PBAVerified + ' where SSN=' + req.body.SSN,
+        sql: 'insert into Bank_Account (BankID,BANumber) values (?,?)',
+        values: [req.body.BankID, req.body.BANumber],
+        timeout: 60000
+      }, (err1, result) => {
+        if ( err1 ) {
+          console.log('err1: ', err1);
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false, msg: 'error'});
+          connection.release();
+          throw err1;
+        }
+
+        console.log('result: ', result);
+        if ( result.affectedRows > 0 ) {
+          connection.query({
+            sql: 'update User_Account set BankID=' + req.body.BankID + ',BANumber=' + req.body.BANumber +
+              ',PBAVerified=' + req.body.PBAVerified + ' where SSN=' + req.body.SSN,
+            timeout: 60000
+          }, (err2, result1) => {
+            if ( err2 ) {
+              console.log('err2: ', err2);
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: false, msg: 'error'});
+              connection.release();
+              throw err2;
+            }
+            console.log('res2 ', result1);
+            if ( result1.affectedRows > 0 ) {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: true});
+            } else {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: false});
+            }
+            connection.release();
+          });
+        } else {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false});
+          connection.release();
+        }
+        
+      });
+    } else if ( req.query.key === 'sbaAdd' ) {
+      await connection.query({
+        sql: 'select BankID from Bank_Account where BankID=? and BANumber=?',
+        values: [req.body.BankID, req.body.BANumber],
+        timeout: 60000  
+      }, async (err3, result2) => {
+        if ( err3 ) {
+          console.log('err3: ', err3);
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false, msg: 'error'});
+          connection.release();
+          throw err3;
+        }
+
+        console.log('result2: ', result2);
+        if ( result2.length > 0 ) {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false, msg: 'duplicate'});
+        } else {
+          await connection.query({
+            sql: 'insert into Bank_Account(BankID, BANumber) values (?,?)',
+            values: [req.body.BankID, req.body.BANumber],
+            timeout: 60000
+          }, (err1, result) => {
+            if ( err1 ) {
+              console.log('err1: ', err1);
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: false, msg: 'error'});
+              connection.release();
+              throw err1;
+            }
+    
+            console.log('result: ', result);
+            if ( result.affectedRows > 0 ) {
+              connection.query({
+                sql: 'insert into Has_Additional (SSN, BankID, BANumber, Verified) values (?,?,?,?)',
+                values: [req.body.SSN, req.body.BankID, req.body.BANumber, false],
+                timeout: 60000
+              }, (err2, result1) => {
+                if ( err2 ) {
+                  console.log('err2: ', err2);
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.json({success: false, msg: 'error'});
+                  connection.release();
+                  throw err2;
+                }
+    
+                console.log('result1: ', result1);
+                if ( result1.affectedRows > 0 ) {
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.json({success: true});
+                } else {
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.json({success: false, msg: 'error'});
+                }
+              })
+            } else {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: false, msg: 'error'});
+            }
+    
+            connection.release();
+          });
+        }
+      });
+      
     }
   });
 })
@@ -309,6 +434,33 @@ router.get('/:userId', cors.corsWithOptions, async (req, res, next) => {
         }
         connection.release();
       });
+    } else if ( req.body.key === 'sbaVerified' ) {
+      connection.query({
+        sql: 'update Has_Additional set Verified=true where SSN=' + req.body.SSN + ' and BankID=' + req.body.BankID + ' and BANumber=' + req.body.BANumber,
+        timeout: 60000
+      }, (err1, result) => {
+        if ( err1 ) {
+          console.log('err1: ', err1);
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false, msg: 'error'});
+          connection.release();
+          throw err1;
+        }
+  
+        console.log('result: ', result);
+        if ( result.changedRows > 0 ) {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: true});
+        } else {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false});
+        }
+        connection.release();
+      
+      });
     } else {
       await connection.query({
         sql: 'update ' + req.body.table + ' set ' + req.body.key + '=' + req.body.value + ' where SSN=' + req.params.userId,
@@ -352,6 +504,83 @@ router.get('/:userId', cors.corsWithOptions, async (req, res, next) => {
     if (req.query.key == 'EmailAdd') {
       await connection.query({
         sql: 'delete from Email where id=' + req.params.userId,
+        timeout: 60000
+      }, (err1, result) => {
+        if ( err1 ) {
+          console.log('err1: ', err1);
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false, msg: 'error'});
+          connection.release();
+          throw err1;
+        }
+
+        console.log('result: ', result);
+        if ( result.affectedRows > 0 ) {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: true});
+        } else {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false});
+        }
+        connection.release();
+      });
+    } else if ( req.query.key === 'pba' ) {
+      console.log('query', req.query);
+      await connection.query({
+        sql: 'update User_Account set BankID=null,BANumber=null,PBAVerified=false where SSN=' + req.params.userId,
+        timeout: 60000
+      }, (err1, result) => {
+        if ( err1 ) {
+          console.log('err1: ', err1);
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false, msg: 'error'});
+          connection.release();
+          throw err1;
+        }
+
+        console.log('result: ', result);
+        if ( result.affectedRows > 0 ) {
+          connection.query({
+            sql: 'delete from Bank_Account where BankID=' + req.query.BankID + ' and BANumber=' + req.query.BANumber,
+            duration: 60000
+          }, (err2, result1) => {
+            if ( err2 ) {
+              console.log('err2: ', err2);
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: false, msg: 'error'});
+              connection.release();
+              throw err2;
+            }
+
+            console.log('result1 ', result1);
+            if ( result1.affectedRows > 0 ) {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: true});
+            } else {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: false});
+            }
+            connection.release();
+          });
+        } else {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false});
+          connection.release();
+        }
+      });
+    } else if ( req.query.key === 'sba' ) {
+      console.log('banumber: ', req.query.BANumber);
+      connection.query({
+        sql: 'delete from Has_Additional where SSN=' + req.params.userId + ' and BankID=' + req.query.BankID + ' and BANumber=' + req.query.BANumber,
+        // values: [req.params.userId, req.params.BankID, req.params.BANumber],
         timeout: 60000
       }, (err1, result) => {
         if ( err1 ) {

@@ -12,6 +12,7 @@ import { map, delay, catchError} from 'rxjs/operators';
 
 import { User } from '../shared/user';
 import { baseDomain, baseURL } from '../shared/baseurl';
+import { BankListInterface } from '../shared/bankList';
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +129,64 @@ export class AuthService {
     const params = new HttpParams().set('key', 'EmailAdd');
 
     return this.http.post(baseURL + 'users/' + emailObject.SSN, emailObject,  {params})
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  }
+
+  // Add new Primary Bank Account
+  addNewPBA(BankObj): Observable<any> {
+    const params = new HttpParams().set('key', 'pbaAdd');
+    
+    return this.http.post(baseURL + 'users/' + BankObj.SSN, BankObj, {params})
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  }
+
+  deletePBA(BankObj): Observable<any> {
+    let params = new HttpParams().set('key', 'pba').append('BankID', BankObj.BankID).append('BANumber', BankObj.BANumber);
+    // params.append('BankID', BankObj.BankID);
+    // params.append('BANumber', BankObj.BANumber);
+
+    console.log('params: ', params);
+
+    return this.http.delete(baseURL + 'users/' + BankObj.SSN,{params})
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  }
+
+  // Add new Secondary Account
+  addNewSBA(BankObj): Observable<any> {
+    const params = new HttpParams().set('key', 'sbaAdd');
+
+    return this.http.post(baseURL + 'users/' + BankObj.SSN, BankObj, {params})
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  }
+
+  deleteSBA(BankObj): Observable<any> {
+    let params = new HttpParams().set('key', 'sba').append('BankID', BankObj.BankID).append('BANumber', BankObj.BANumber);
+
+    console.log('params: ', params);
+
+    return this.http.delete(baseURL + 'users/' + BankObj.SSN,{params})
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  }
+
+  verifySBA(BankObj): Observable<any> {
+    // let params = new HttpParams().set('key', 'sbaVerified');
+
+    return this.http.put(baseURL + 'users/' + BankObj.SSN, BankObj)
     .pipe(map(res => res), catchError(error => {
       // debugger;
       return this.processHTTPMsgService.handleError(error);

@@ -216,23 +216,100 @@
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                             <mat-panel-title>
-                                Primary Bank
+                                Primary Bank Account
                             </mat-panel-title>
                             <mat-panel-description>
-                                Click here to edit Primary Bank
+                                Click here to add/view Primary Bank
                             </mat-panel-description>
                         </mat-expansion-panel-header>
+
+                        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px" style="width: 100%;">
+                            <mat-form-field style="width: 100%;" appearance="outline" *ngIf="user.BANumber === null">
+                                <mat-label>Select Bank</mat-label>
+                                <mat-select [(ngModel)]="selectedBank">
+                                    <mat-option *ngFor="let bank of bankList" [value]="bank">
+                                        {{bank.BankName}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <div style="width: 100%;" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="5px">
+                                <mat-form-field style="width:85%" appearance="outline">
+                                    <mat-label>Enter Account Number</mat-label>
+                                    <input matInput value="{{user.BANumber}}" [disabled]="user.BANumber !== null" [(ngModel)]="BankAccNo" (keypress)="numberOnly($event)" maxlength="10">
+                                    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px" matSuffix>
+                                        <button mat-button mat-icon-button type="button" [disabled]="selectedBank === null" (click)="addPBA()" *ngIf="user.BANumber === null">
+                                            <mat-icon>add_circle</mat-icon>
+                                        </button>
+                                        <button mat-button mat-icon-button type="button" (click)="deletePBA()" *ngIf="user.BANumber !== null">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </mat-form-field>
+
+                                <mat-checkbox *ngIf="user.BANumber !== null" style="width: 15%;" [disabled]="PBACbDisabled" [(ngModel)]="PBACbValue" (change)="PBAonClickVerify()">
+                                    Verified
+                                </mat-checkbox>
+                            </div>
+                        </div>
                     </mat-expansion-panel>
 
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
                             <mat-panel-title>
-                                Secondary Bank
+                                Secondary Bank Account
                             </mat-panel-title>
                             <mat-panel-description>
-                                Click here to edit Secondary Bank
+                                Click here to add/view Secondary Bank
                             </mat-panel-description>
                         </mat-expansion-panel-header>
+
+                        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px" style="width: 100%;">
+                            <div style="width: 100%;" *ngIf="user.AddBankAccs.length > 0">
+                                
+                                <div style="width: 100%;" *ngFor="let bank of user.AddBankAccs" fxLayout="column" fxLayoutAlign="center" fxLayoutGap="2px">
+                                    <div style="width: 100%;" fxLayout="row" fxLayoutAlign="center center">
+                                        <span><strong>Bank Name: </strong> {{bank.BankName}}</span>
+                                        <span class="flex-spacer"></span>
+                                        <button mat-button mat-icon-button type="button" (click)="deleteSBA(bank)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
+
+                                    <span><strong>Account Number: </strong> {{bank.BANumber}}</span>
+
+                                    <div style="width: 100%;" fxLayout="row" fxLayoutAlign="center center">
+                                        <span><strong>Verified: </strong><span *ngIf="bank.Verified === 0 || bank.Verified === false">No</span><span *ngIf="bank.Verified === 1 || bank.Verified === true">Yes</span></span>
+                                        <span class="flex-spacer"></span>
+                                        <button *ngIf="bank.Verified === 0 || bank.Verified === false" mat-button type="button" (click)="verifySBA(bank)">
+                                            <span>Verify</span>
+                                        </button>
+                                    </div>
+
+                                    <hr>
+                                </div>
+                                
+                            </div>
+
+                            <mat-form-field *ngIf="user.AddBankAccs.length < 3" style="width: 100%;" appearance="outline">
+                                <mat-label>Select Bank</mat-label>
+                                <mat-select [(ngModel)]="selectedSecondaryBank">
+                                    <mat-option *ngFor="let bank of bankList" [value]="bank">
+                                        {{bank.BankName}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <mat-form-field *ngIf="user.AddBankAccs.length < 3" style="width: 100%;" appearance="outline">
+                                <mat-label>Enter Account Number</mat-label>
+                                <input matInput [(ngModel)]="SecondaryBankAccNo" (keypress)="numberOnly($event)" maxlength="10">
+                                <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="3px" matSuffix>
+                                    <button mat-button mat-icon-button type="button" [disabled]="selectedSecondaryBank === null" (click)="addSBA()">
+                                        <mat-icon>add_circle</mat-icon>
+                                    </button>
+                                </div>
+                            </mat-form-field>
+                        </div>
                     </mat-expansion-panel>
                 </mat-accordion>
             </mat-card-content>

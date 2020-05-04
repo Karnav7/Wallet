@@ -16,6 +16,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatListModule } from '@angular/material/list';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -50,7 +51,7 @@ import { ProfileComponent } from './profile/profile.component';
     HttpModule,
     HttpClientModule,
     MatButtonModule, MatCardModule, MatToolbarModule, MatFormFieldModule, MatInputModule, MatSnackBarModule,
-    MatMenuModule, MatIconModule, MatExpansionModule, MatSelectModule, MatCheckboxModule,
+    MatMenuModule, MatIconModule, MatExpansionModule, MatSelectModule, MatCheckboxModule, MatListModule,
     FlexLayoutModule,
     ReactiveFormsModule,
     LoadingBarHttpClientModule,
