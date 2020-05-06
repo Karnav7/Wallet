@@ -215,6 +215,34 @@ export class SendMoney {
       } else {
         if ( this.recipient.match(emailRegex) && this.amount.match(amountRegex) ) {
           console.log('yo');
+          this.sendtransaction.Identifier = this.recipient.trim();
+          this.sendtransaction.Memo = this.memo.trim();
+          this.sendtransaction.SSN = user1.SSN;
+          this.sendtransaction.Balance = user1.Balance;
+          this.sendtransaction.Amount = +this.amount;
+          console.log('sendData: ', this.sendtransaction);
+          this.transactionService.sendTransactionData(this.sendtransaction).subscribe((data)=> {
+            if ( data.success === true ) {
+              let bal = user1.Balance - +this.amount;
+              user1.Balance = bal;
+              
+              this.snackBar.open('Transaction Completed Successfully!', 'OK', {
+                duration: 3000
+              });
+              
+              
+              this._bottomSheetRef.afterDismissed().subscribe(() => {
+                hc = new HomeComponent(this.authService, this.cookieService, this.router, this.snackBar, this._bottomSheet);
+                hc.setUser(user1);
+                hc.balanceText.nativeElement.innerHTML = 'Balance: $' + user1.Balance;
+              });
+              this._bottomSheetRef.dismiss();
+            } else {
+              this.snackBar.open('Transaction failed, try again!', 'OK', {
+                duration: 3000
+              });
+            }
+          });
         } else {
           this.snackBar.open('Error! Email not in valid format', 'OK', {
             duration: 5000

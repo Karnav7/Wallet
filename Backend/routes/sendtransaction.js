@@ -116,6 +116,81 @@ router.get('/', function(req, res, next) {
                     });
                 } else {
                     console.log('nah');
+                    let email = req.body.Identifier;
+                    // Ger Recepients amount
+                    await connection.query({
+                        sql: 'select Email.SSN, User_Account.Balance from Email join User_Account on Email.SSN = User_Account.SSN where Email.EmailAdd="' + req.body.Identifier + '"',
+                        timeout: 60000
+                    }, async (err3, recRes) => {
+                        if ( err3 ) {
+                            console.log('err3: ', err3);
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json({success: false, msg: 'error'});
+                            connection.release();
+                            throw err3;
+                        }
+                        console.log('recRes: ', recRes);
+                        if ( recRes.length > 0 ) {
+                            // Update Recipient Balance
+                            let recBal = 0.00;
+                            recBal = recRes[0].Balance;
+                            let recSSN = 0;
+                            recSSN = recRes[0].SSN;
+                            let recAmount = 0.00;
+                            recAmount = recBal + (+req.body.Amount);
+                            await connection.query({
+                                sql: 'update User_Account set Balance=' + recAmount + ' where SSN=' + recSSN,
+                                timeout: 60000
+                            }, async (err4, recBalUpRes) => {
+                                if ( err4 ) {
+                                    console.log('err4: ', err4);
+                                    res.statusCode = 200;
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.json({success: false, msg: 'error'});
+                                    connection.release();
+                                    throw err4;
+                                }
+                                console.log('recBalUpRes: ', recBalUpRes);
+                                if ( recBalUpRes.affectedRows > 0 ) {
+                                    // Update sender balance
+                                    let sendAmount = 0.00;
+                                    sendAmount = +req.body.Balance - +req.body.Amount;
+                                    await connection.query({
+                                        sql: 'update User_Account set Balance=' + sendAmount + ' where SSN=' + req.body.SSN,
+                                        timeout: 60000
+                                    }, (err5, sendBalUpRes) => {
+                                        if ( err5 ) {
+                                            console.log('err5: ', err5);
+                                            res.statusCode = 200;
+                                            res.setHeader('Content-Type', 'application/json');
+                                            res.json({success: false, msg: 'error'});
+                                            connection.release();
+                                            throw err5;
+                                        }
+                                        console.log('sendBalUpRes: ', sendBalUpRes);
+                                        if ( sendBalUpRes.affectedRows > 0 ) {
+                                            res.statusCode = 200;
+                                            res.setHeader('Content-Type', 'application/json');
+                                            res.json({success: true});
+                                        } else {
+                                            res.statusCode = 200;
+                                            res.setHeader('Content-Type', 'application/json');
+                                            res.json({success: false});
+                                        }
+                                    })
+                                } else {
+                                    res.statusCode = 200;
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.json({success: false});
+                                }
+                            })
+                        } else {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json({success: false});
+                        }
+                    });
                 }
             } else {
                 res.statusCode = 200;
