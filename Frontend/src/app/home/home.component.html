@@ -1,4 +1,4 @@
-<mat-toolbar style="width: 100%;" class="background-primary-dark">
+<mat-toolbar style="width: 100%;" class="background-primary-dark raised-effect3">
     <span class="text-floral-white">WALLET</span>
     <span class="flex-spacer"></span>
     <span class="text-floral-white">{{username}}</span>
@@ -17,4 +17,18 @@
         </button>
     </mat-menu>
 </mat-toolbar>
-<p>home works!</p>
+<div style="width: 100%; height: 100%;" class="overflow" fxLayout="column" fxLayoutAlign="top center">
+    <div id="balanceCard" class="raised-effect3 rounded-corners">
+        <span id="balanceText">Balance: ${{balance}}</span>
+    </div>
+
+    <div id="transactionPanel" class="raised-effect3" fxLayout="row" fxLayoutAlign="center center">
+        <button id="recieveMoneyBtn" mat-button (click)="recieveMoney()">
+            <span>Recieve Money</span>
+        </button>
+        <button id="sendMoneyBtn" mat-button class="background-primary-light" (click)="sendMoney()">
+            <span class="text-floral-white">Send Money</span>
+        </button>
+    </div>
+</div>
+

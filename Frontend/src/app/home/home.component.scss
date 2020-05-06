@@ -1,0 +1,52 @@
+$primary-color-dark: #1565c0;
+$primary-color-light: #64b5f6;
+$primary-color: #1e88e5;
+$success: #4caf50;
+$faint-color: #e3f2fd;
+$accent-color: #e91e63;
+$disable-color: #757575;
+$special-btn-color: #673ab7;
+$special-icon-color: #ffea00;
+
+#balanceCard {
+    margin-top: 2%;
+    // height:
+    background-color: $primary-color;
+}
+
+#balanceText {
+    font-size: 45px;
+    color: floralwhite;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#transactionPanel {
+    margin-top: 2%;
+    width: 85%;
+    border-radius: 25px;
+}
+
+#recieveMoneyBtn {
+    width: 50%;
+    border-bottom-left-radius: 25px;
+    border-top-left-radius: 25px;
+}
+
+#recieveMoneyBtn:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+#sendMoneyBtn {
+    width: 50%;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
+#sendMoneyBtn:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.rounded-corners {
+    border-radius: 25px;
+}

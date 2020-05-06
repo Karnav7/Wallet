@@ -17,6 +17,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -29,18 +30,19 @@ import { RestangularConfigFactory } from './shared/restConfig';
 import { ProcessHttpmsgService } from './services/process-httpmsg.service';
 import { AuthService } from './services/auth.service';
 import { CookieService } from 'ngx-cookie-service';
+import { TransactionService } from './services/transaction.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent, SendMoney } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent,
+    HomeComponent, SendMoney,
     ProfileComponent
   ],
   imports: [
@@ -52,6 +54,7 @@ import { ProfileComponent } from './profile/profile.component';
     HttpClientModule,
     MatButtonModule, MatCardModule, MatToolbarModule, MatFormFieldModule, MatInputModule, MatSnackBarModule,
     MatMenuModule, MatIconModule, MatExpansionModule, MatSelectModule, MatCheckboxModule, MatListModule,
+    MatBottomSheetModule,
     FlexLayoutModule,
     ReactiveFormsModule,
     LoadingBarHttpClientModule,
@@ -61,7 +64,8 @@ import { ProfileComponent } from './profile/profile.component';
     { provide: 'BaseURL', useValue: baseURL },
     ProcessHttpmsgService,
     AuthService,
-    CookieService
+    CookieService,
+    TransactionService
   ],
   bootstrap: [AppComponent]
 })
