@@ -37,13 +37,15 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent, SendMoney, RequestMoney } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
+import { MonthlyStatementsComponent } from './monthly-statements/monthly-statements.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent, SendMoney, RequestMoney,
-    ProfileComponent
+    ProfileComponent,
+    MonthlyStatementsComponent
   ],
   imports: [
     BrowserModule,

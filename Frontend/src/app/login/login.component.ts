@@ -142,14 +142,14 @@ export class LoginComponent implements OnInit {
         console.log('data: ', data);
         
         if ( data.success === true ) {
-          this.user = data.user;
+          this.user = data.user[0];
 
-          this.cookieService.set('Id', data.user.SSN, 30, '/', '', false);
-          this.cookieService.set('Name', data.user.Name, 30, '/', '', false);
-          this.cookieService.set('MobileNo', data.user.PhoneNo, 30, '/', '', false);
+          this.cookieService.set('Id', data.user[0].SSN, 30, '/', '', false);
+          this.cookieService.set('Name', data.user[0].Name, 30, '/', '', false);
+          this.cookieService.set('MobileNo', data.user[0].PhoneNo, 30, '/', '', false);
 
           this.router.navigate(['/home']).then(() => {
-            this.snackBar.open('Welcome to Wallet, '  + data.user.Name + '!', 'OK', {
+            this.snackBar.open('Welcome to Wallet, '  + data.user[0].Name + '!', 'OK', {
               duration: 3000
             });
           });

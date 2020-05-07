@@ -13,6 +13,7 @@ import { map, delay, catchError} from 'rxjs/operators';
 import { User } from '../shared/user';
 import { SendTransaction } from '../shared/sendTransaction';
 import { baseDomain, baseURL } from '../shared/baseurl';
+import { RequestTransaction } from '../shared/requestTransaction';
 
 @Injectable({
   providedIn: 'root'
@@ -58,5 +59,54 @@ export class TransactionService {
         // debugger;
         return this.processHTTPMsgService.handleError(error);
       }));
+  }
+
+  // Request Money From Single Person
+  requestTransactionSingle(data: RequestTransaction): Observable<any> {
+    console.log('data', data);
+
+    return this.http.post(baseURL + 'reqtransaction', data)
+      .pipe(map(res => res), catchError(error => {
+        // debugger;
+        return this.processHTTPMsgService.handleError(error);
+      }));
+  }
+
+  // get all partial reqTransactions of user
+  getAllPendingReqTransations(data): Observable<any> {
+    console.log('getdata', data);
+    let params = new HttpParams().set('status', data.status).append('Email1', data.Email1).append('Phone', data.Phone);
+    return this.http.get(baseURL + 'reqtransaction', {params})
+      .pipe(map(res => res), catchError(error => {
+        // debugger;
+        return this.processHTTPMsgService.handleError(error);
+      }));
+  }
+
+  allowRequestTransaction(data: RequestTransaction): Observable<any> {
+    console.log('getdata', data);
+    return this.http.put(baseURL + 'reqtransaction/' + data.RTid, data)
+      .pipe(map(res => res), catchError(error => {
+        // debugger;
+        return this.processHTTPMsgService.handleError(error);
+      }));
+  }
+
+  getMonthlySendTransactionStatements(ssn): Observable<any> {
+    let params = new HttpParams().set('SSN', ssn);
+    return this.http.get(baseURL + 'sendtransaction', {params} )
+      .pipe(map(res => res), catchError(error => {
+        // debugger;
+        return this.processHTTPMsgService.handleError(error);
+      }));
+  }
+
+  getMonthlyRequestTransactionStatements(ssn): Observable<any> {
+    let params = new HttpParams().set('SSN', ssn).append('status', 'monthlyExpense');
+    return this.http.get(baseURL + 'reqtransaction', {params})
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
   }
 }

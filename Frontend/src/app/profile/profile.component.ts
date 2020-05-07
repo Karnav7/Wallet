@@ -414,7 +414,7 @@ export class ProfileComponent implements OnInit {
     deleteSnackBar.open('Are you sure?', 'Yes', {
       duration: 5000
     }).onAction().subscribe(() => {
-      this.authService.deleteSingleEmailIDByID({table: 'Email', key: 'EmailAdd', id: this.emailInterface.id}).subscribe((data: any) => {
+      this.authService.deleteSingleEmailIDByID({table: 'Email', key: 'EmailAdd', id: this.emailInterface.EmailAdd}).subscribe((data: any) => {
 
         if ( data.success === true ) {
           for ( let i = 0; i < this.emailIds.length; i++ ) {
@@ -462,6 +462,7 @@ export class ProfileComponent implements OnInit {
         });
 
         this.emailInterface.EmailAdd = this.email.trim();
+        this.emailAdd = '';
       }
     });
   }
@@ -479,14 +480,16 @@ export class ProfileComponent implements OnInit {
           duration: 5000
         }).onAction().subscribe(() => {
           // this.emailIds.push(this.emailInterface);
+          // this.emailIds= [];
           this.authService.addNewEmail({SSN: this.user.SSN, EmailAdd: this.emailAdd.trim(), Verified: true}).subscribe((data1) => {
             console.log('data1 ', data1);
             
             if ( data1.success === true ) {
-              this.emailInterface.id = data1.id;
-              this.emailInterface.EmailAdd = this.emailAdd.trim();
-              this.emailInterface.Verified = 1;
-              this.emailIds.push(this.emailInterface);
+              // this.emailInterface.id = data1.id;
+              // this.emailInterface.EmailAdd = this.emailAdd.trim();
+              // this.emailInterface.Verified = 1;
+              this.emailIds.push({id: data1.id, EmailAdd: this.emailAdd.trim(), Verified: 1});
+              this.emailAdd = null;
               this.snackBar.open('EmailId added successfully!', 'OK', {
                 duration: 3000
               });

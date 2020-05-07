@@ -1,3 +1,35 @@
-<div style="width: 100%;" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
-    
+<div style="width: 100%;" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="5px">
+    <div fxLayout="row" style="width: 100%;" fxLayoutAlign="center center" fxLayoutGap="10px">
+        <span fxFlex="50">Do you Want to split Money?</span>
+
+        <mat-form-field fxFlex="50" appearance="outline">
+            <mat-label>Select your choice</mat-label>
+            <mat-select (selectionChange)="onSplitMoneySelection($event.value)" required>
+                <mat-option [value]="1">Yes</mat-option>
+                <mat-option [value]="0">No</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <mat-form-field *ngIf="showSingleSender === true" style="width: 100%;" appearance="outline">
+        <mat-label>Enter Recipient Detail</mat-label>
+        <input type="text" matInput placeholder="Enter Email ID / Phone Number" [(ngModel)]="sender" required>
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%;" appearance="outline">
+        <mat-label>Enter Amount</mat-label>
+        <input type="text" matInput [(ngModel)]="amount" pattern="[0-9]+.[0-9][0-9]" required>
+    </mat-form-field>
+
+    <mat-form-field style="width: 100%" appearance="outline">
+        <mat-label>Memo</mat-label>
+        <textarea type="text" matInput #sendMemo placeholder="(Optional)" [(ngModel)]="memo" maxlength="250"></textarea>
+        <mat-hint align="end">{{sendMemo.value.length}} / 250</mat-hint>
+    </mat-form-field>
+
+    <div style="width: 100%;" fxLayout="row" fxLayoutAlign="center center">
+        <button mat-raised-button class="rounded-corners background-primary" (click)="requestMoney()">
+            <span class="text-floral-white">Request</span>
+        </button> 
+    </div>
 </div>

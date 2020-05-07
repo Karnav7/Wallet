@@ -6,8 +6,42 @@ const pool = require('../pool');
 const cors = require('../cors');
 
 // Get all Send Transactions
-router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
+router.get('/', async function(req, res, next) {
+    // res.send('respond with a resource');
+
+    // Get All Send Transactions of a particular user Monthwise
+    await pool.getConnection(async (err, connection) => {
+        if ( err ) {
+            console.error("Something went wrong connecting to the database ...");
+            throw err;
+        }
+
+        await connection.query({
+            sql: 'select * from Monthly_Send_Transaction_Statements where SSN=' + req.query.SSN,
+            timeout: 60000
+        }, (err1, result) => {
+            if ( err1 ) {
+                console.log('err1: ', err1);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success: false, msg: 'error'});
+                connection.release();
+                throw err1;
+            }
+
+            console.log('result: ', result);
+
+            if ( result.length > 0 ) {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success: true, result: result});
+            } else {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success: false, result: []});
+            }
+        });
+    });
 })
 // Add new Send Transaction
 .post('/', async (req, res, next) => {

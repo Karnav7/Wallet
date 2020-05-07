@@ -1,5 +1,8 @@
 <mat-toolbar style="width: 100%;" class="background-primary-dark raised-effect3">
-    <span class="text-floral-white">WALLET</span>
+    <span class="text-floral-white" [routerLink]="['/home']">WALLET</span>
+    <button mat-button [routerLink]="['/statements']">
+        <span class="text-floral-white">Monthly Statements</span>
+    </button>
     <span class="flex-spacer"></span>
     <span class="text-floral-white">{{username}}</span>
     <button mat-icon-button [matMenuTriggerFor]="toolbarMenu">
@@ -30,5 +33,49 @@
             <span class="text-floral-white">Send Money</span>
         </button>
     </div>
+
+    <mat-card id="reqMoneyCard" style="width: 90%;" class="raised-effect3 rounded-corners">
+        <mat-card-title><h3>Request for Money</h3></mat-card-title>
+
+        <mat-card-content>
+            <mat-accordion *ngIf="reqTransactions.length > 0">
+
+                <mat-expansion-panel *ngFor="let data of reqTransactions">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            {{data.Name}}
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            ${{data.Amount}}   -   {{data.Date_Time | date: 'short'}}
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+
+                    <div fxLayout="column" fxLayoutAlign="center" fxLayoutGap="5px">
+                        <h4>Recipient Details</h4>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                            <span><strong>Name: </strong> {{data.Name}}</span>
+                            <span><strong>Phone Number: </strong> {{data.PhoneNo}}</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                            <span><strong>Amount: </strong> ${{data.Amount}}</span>
+                            <span><strong>Date: </strong> {{data.Date_Time | date: 'medium'}}</span>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                            <span><strong>Memo: </strong> <pre>{{data.Memo}}</pre></span>
+                        </div>
+
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+                            <button mat-raised-button type="button" (click)="allowRequestedTransaction(data)" class="background-primary">
+                                <span class="text-floral-white">Send</span>
+                            </button>
+                            <button mat-raised-button type="button" (click)="declineRequestedTransaction(data)" color="warn">
+                                <span class="text-floral-white">Decline</span>
+                            </button>
+                        </div>
+                    </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </mat-card-content>
+    </mat-card>
 </div>
 

@@ -9,6 +9,7 @@ import { AuthService } from '../services/auth.service';
 import { CookieService } from 'ngx-cookie-service';
 import { TransactionService } from '../services/transaction.service';
 import { SendTransaction } from '../shared/sendTransaction';
+import { RequestTransaction } from '../shared/requestTransaction';
 
 @Component({
   selector: 'app-home',
@@ -31,6 +32,20 @@ export class HomeComponent implements OnInit {
     AddBankAccs: null
   };
 
+  private requesttransaction: RequestTransaction = {
+    SSN: null,
+    RTid: null,
+    Percentage: null,
+    Identifier: null,
+    Amount: null,
+    Date_Time: null,
+    Memo: null,
+    key: null,
+    status: null
+  };
+
+  public reqTransactions: RequestTransaction[] = [];
+
   username: string;
   balance: number;
 
@@ -39,6 +54,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private cookieService: CookieService,
+    private transactionService: TransactionService,
     private router: Router,
     public snackBar: MatSnackBar,
     private _bottomSheet: MatBottomSheet
@@ -50,20 +66,31 @@ export class HomeComponent implements OnInit {
         this.balance = this.user.Balance;
         console.log('youser: ', this.user);
 
-        // if ( this.user.EmailIds.length > 0 ) {
-        //   this.user.EmailIds.forEach((email) => {
-        //     this.emailIds.push(email);
-        //   });
-        //   console.log('emails: ', this.emailIds);
-        // }
-
-        // if ( this.user.AddBankAccs.length > 0 ) {
-        //   this.user.AddBankAccs.forEach((bank) => {
-        //     bank.BankName = this.getBankName(bank.BankID);
-        //   });
-        // }
+        if ( this.user.EmailIds.length > 0 ) {
+          this.reqTransactions = [];
+          this.transactionService.getAllPendingReqTransations({status: 'Partial', Email1: this.user.EmailIds[0].EmailAdd, Phone: this.user.PhoneNo}).subscribe((data) => {
+            if ( data.success == true ) {
+              console.log('data', data.result);
+              for ( let i = 0; i < data.result.length; i++ ) {
+                this.reqTransactions.push(data.result[i]);
+              }
+            }
+          });
+        } else {
+          this.reqTransactions = [];
+          this.transactionService.getAllPendingReqTransations({status: 'Partial', Email1: null, Phone: this.user.PhoneNo}).subscribe((data) => {
+            if ( data.success == true ) {
+              console.log('data', data.result);
+              for ( let i = 0; i < data.result.length; i++ ) {
+                this.reqTransactions.push(data.result[i]);
+              }
+            }
+          });
+        }
       }
     });
+    
+    
   }
 
   ngOnInit(): void {
@@ -122,6 +149,35 @@ export class HomeComponent implements OnInit {
     this._bottomSheet.open(SendMoney);
   }
 
+  allowRequestedTransaction(data: RequestTransaction) {
+    this.requesttransaction = data;
+    this.requesttransaction.Percentage = 99.99;
+    this.requesttransaction.key = this.user.SSN.toString(); // sender info
+    this.transactionService.allowRequestTransaction(this.requesttransaction).subscribe((resp) => {
+      if ( resp.success === true ) {
+        this.user.Balance -= data.Amount;
+        let i = 0;
+        this.reqTransactions.forEach((trans) => {
+          if ( trans.RTid === data.RTid ) {
+            this.reqTransactions.splice(i, 1);
+          }
+          i++;
+        });
+        this.snackBar.open('Amount Sent Successfully!', 'OK', {
+          duration: 3000
+        });
+      } else {
+        this.snackBar.open('Transaction failed, try again!', 'OK', {
+          duration: 3000
+        });
+      }
+    });
+  }
+
+  declineRequestedTransaction(data) {
+
+  }
+
 }
 
 @Component({
@@ -170,7 +226,7 @@ export class SendMoney {
     ) {}
 
   sendMoney() {
-    let hc: HomeComponent = new HomeComponent(this.authService, this.cookieService, this.router, this.snackBar, this._bottomSheet);
+    let hc: HomeComponent = new HomeComponent(this.authService, this.cookieService, this.transactionService, this.router, this.snackBar, this._bottomSheet);
     setTimeout(() => {
       let user1: User = hc.getUser();
       console.log('user1: ', user1); 
@@ -198,7 +254,7 @@ export class SendMoney {
               
               
               this._bottomSheetRef.afterDismissed().subscribe(() => {
-                hc = new HomeComponent(this.authService, this.cookieService, this.router, this.snackBar, this._bottomSheet);
+                hc = new HomeComponent(this.authService, this.cookieService, this.transactionService, this.router, this.snackBar, this._bottomSheet);
                 hc.setUser(user1);
                 hc.balanceText.nativeElement.innerHTML = 'Balance: $' + user1.Balance;
               });
@@ -234,7 +290,7 @@ export class SendMoney {
               
               
               this._bottomSheetRef.afterDismissed().subscribe(() => {
-                hc = new HomeComponent(this.authService, this.cookieService, this.router, this.snackBar, this._bottomSheet);
+                hc = new HomeComponent(this.authService, this.cookieService, this.transactionService, this.router, this.snackBar, this._bottomSheet);
                 hc.setUser(user1);
                 hc.balanceText.nativeElement.innerHTML = 'Balance: $' + user1.Balance;
               });
@@ -263,6 +319,25 @@ export class SendMoney {
 })
 export class RequestMoney {
 
+  sender = '';
+  amount= '';
+  memo= '';
+
+  showSingleSender = false;
+  showMultipleSender = false;
+
+  private requesttransaction: RequestTransaction = {
+    SSN: null,
+    RTid: null,
+    Percentage: null,
+    Identifier: null,
+    Amount: null,
+    Date_Time: null,
+    Memo: null,
+    key: null,
+    status: null
+  };
+
   constructor(
     private _bottomSheetRef: MatBottomSheetRef<RequestMoney>,
     private authService: AuthService,
@@ -273,5 +348,76 @@ export class RequestMoney {
     private _bottomSheet: MatBottomSheet
   ) {
     
+  }
+
+  onSplitMoneySelection(choice) {
+    if ( choice === 1 ) {
+      this.showMultipleSender = true;
+      this.showSingleSender = false;
+    } else {
+      this.showMultipleSender = false;
+      this.showSingleSender = true;
+    }
+  }
+
+  requestMoney() {
+    if ( this.showSingleSender === true && this.amount !== '' && this.sender !== '' ) {
+      let hc: HomeComponent = new HomeComponent(this.authService, this.cookieService, this.transactionService, this.router, this.snackBar, this._bottomSheet);
+      setTimeout(() => {
+        let user1: User = hc.getUser();
+        console.log('user1: ', user1); 
+        console.log('hcuser: ', hc.user);
+        const numRegex = /^[0-9]+$/;
+        const emailRegex = /^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\.([a-zA-Z]{2,5})$/;
+        const amountRegex = /^[0-9]+\.[0-9][0-9]$/;
+        if ( this.sender.match(numRegex) ) {
+          if ( this.sender.length === 10 && this.amount.match(amountRegex) ) {
+            this.requesttransaction.SSN = user1.SSN;
+            this.requesttransaction.Amount = +this.amount;
+            this.requesttransaction.Memo = this.memo;
+            this.requesttransaction.Identifier = this.sender;
+            this.requesttransaction.Percentage = 50.01;
+            this.requesttransaction.key = 'Phone';
+            this.transactionService.requestTransactionSingle(this.requesttransaction).subscribe((data) => {
+              if ( data.success === true ) {
+                console.log('yo');
+                this.requesttransaction.RTid = data.RTid;
+                this.snackBar.open('Money Request sent successfully!', 'OK', {
+                  duration: 3000
+                });
+                this._bottomSheetRef.dismiss();
+              }
+            });
+          }
+        } else {
+          if ( this.sender.match(emailRegex) && this.amount.match(amountRegex) ) {
+            this.requesttransaction.SSN = user1.SSN;
+            this.requesttransaction.Amount = +this.amount;
+            this.requesttransaction.Memo = this.memo;
+            this.requesttransaction.Identifier = this.sender;
+            this.requesttransaction.Percentage = 50.01;
+            this.requesttransaction.key = 'Email';
+            this.transactionService.requestTransactionSingle(this.requesttransaction).subscribe((data) => {
+              if ( data.success === true ) {
+                console.log('yo');
+                this.requesttransaction.RTid = data.RTid;
+                this.snackBar.open('Money Request sent successfully!', 'OK', {
+                  duration: 3000
+                });
+                this._bottomSheetRef.dismiss();
+              }
+            });
+          } else {
+            this.snackBar.open('Error! Email not in valid format', 'OK', {
+              duration: 5000
+            });
+          }
+        }
+      }, 2000);
+    } else {
+      this.snackBar.open('Kindly fill all required fields!', 'OK', {
+        duration: 3000
+      });
+    }
   }
 }

@@ -1,0 +1,12 @@
+
+
+
+Monthly Send Transaction Statements:
+create view Monthly_Send_Transaction_Statements as
+select month(Date_Time) as Month, monthname(Date_Time) as Month_Name , STid, Date_Time, Amount, Memo, Cancel_Reason, Identifier, SSN from Send_Transaction
+group by STid order by Month;
+
+Monthly Request Transaction Statements:
+create view Monthly_Request_Transaction_Statements as
+select month(R.Date_Time) as Month, monthname(R.Date_Time) as Month_Name, R.RTid, R.Date_Time, R.Amount, R.Memo, R.SSN, F.Identifier, F.Percentage from Request_Transaction R 
+join FROM1 F on R.RTid = F.RTid order by Month;

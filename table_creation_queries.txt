@@ -1,0 +1,90 @@
+CREATE TABLE `User_Account` (
+  `SSN` int(11) NOT NULL,
+  `Name` varchar(255) NOT NULL,
+  `PhoneNo` varchar(256) NOT NULL,
+  `Balance` decimal(14,2) DEFAULT '500.00',
+  `PBAVerified` tinyint(1) DEFAULT '0',
+  `BankID` int(11) DEFAULT NULL,
+  `BANumber` bigint(20) DEFAULT NULL,
+  `Password` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`SSN`),
+  KEY `FK_Bank_Account` (`BankID`,`BANumber`),
+  KEY `PhoneNo` (`PhoneNo`),
+  CONSTRAINT `FK_Bank_Account` FOREIGN KEY (`BankID`, `BANumber`) REFERENCES `Bank_Account` (`BankID`, `BANumber`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `User_Account_ibfk_1` FOREIGN KEY (`PhoneNo`) REFERENCES `Phone` (`PhoneNo`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `Send_Transaction` (
+  `STid` bigint(20) NOT NULL AUTO_INCREMENT,
+  `Amount` decimal(14,2) DEFAULT NULL,
+  `Date_Time` datetime NOT NULL,
+  `Memo` varchar(256) DEFAULT NULL,
+  `Cancel_Reason` varchar(256) DEFAULT NULL,
+  `SSN` int(11) NOT NULL,
+  `Identifier` varchar(256) NOT NULL,
+  PRIMARY KEY (`STid`),
+  KEY `SSN` (`SSN`),
+  CONSTRAINT `Send_Transaction_ibfk_1` FOREIGN KEY (`SSN`) REFERENCES `User_Account` (`SSN`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1
+
+CREATE TABLE `Request_Transaction` (
+  `RTid` int(11) NOT NULL AUTO_INCREMENT,
+  `Amount` decimal(14,2) DEFAULT NULL,
+  `Date_Time` datetime NOT NULL,
+  `Memo` varchar(256) DEFAULT NULL,
+  `SSN` int(11) NOT NULL,
+  PRIMARY KEY (`RTid`),
+  KEY `SSN` (`SSN`),
+  CONSTRAINT `Request_Transaction_ibfk_1` FOREIGN KEY (`SSN`) REFERENCES `User_Account` (`SSN`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Request_Transaction_ibfk_2` FOREIGN KEY (`SSN`) REFERENCES `User_Account` (`SSN`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `Has_Additional` (
+  `SSN` int(11) NOT NULL,
+  `BankID` int(11) DEFAULT NULL,
+  `BANumber` bigint(20) DEFAULT NULL,
+  `Verified` tinyint(1) DEFAULT '0',
+  KEY `FK_Bank_Account_1` (`BankID`,`BANumber`),
+  KEY `FK_User_Account_1` (`SSN`),
+  CONSTRAINT `FK_Bank_Account_1` FOREIGN KEY (`BankID`, `BANumber`) REFERENCES `Bank_Account` (`BankID`, `BANumber`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_User_Account_1` FOREIGN KEY (`SSN`) REFERENCES `User_Account` (`SSN`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `Bank_Account` (
+  `BankID` int(11) NOT NULL,
+  `BANumber` bigint(20) NOT NULL,
+  PRIMARY KEY (`BankID`,`BANumber`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `Elec_Address` (
+  `Identifier` varchar(256) NOT NULL,
+  `Verified` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`Identifier`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `Email` (
+  `EmailAdd` varchar(256) NOT NULL,
+  `SSN` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`),
+  KEY `EmailAdd` (`EmailAdd`),
+  KEY `FK_UserEmail` (`SSN`),
+  CONSTRAINT `Email_ibfk_1` FOREIGN KEY (`EmailAdd`) REFERENCES `Elec_Address` (`Identifier`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_UserEmail` FOREIGN KEY (`SSN`) REFERENCES `User_Account` (`SSN`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1
+
+CREATE TABLE `Phone` (
+  `PhoneNo` varchar(256) NOT NULL,
+  KEY `PhoneNo` (`PhoneNo`),
+  CONSTRAINT `Phone_ibfk_1` FOREIGN KEY (`PhoneNo`) REFERENCES `Elec_Address` (`Identifier`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+
+CREATE TABLE `FROM1` (
+  `RTid` int(11) NOT NULL,
+  `Identifier` varchar(256) DEFAULT NULL,
+  `Percentage` float(2,2) DEFAULT NULL,
+  KEY `Identifier` (`Identifier`),
+  KEY `RTid` (`RTid`),
+  CONSTRAINT `FROM1_ibfk_1` FOREIGN KEY (`Identifier`) REFERENCES `Elec_Address` (`Identifier`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FROM1_ibfk_2` FOREIGN KEY (`RTid`) REFERENCES `Request_Transaction` (`RTid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1

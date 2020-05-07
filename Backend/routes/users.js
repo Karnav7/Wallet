@@ -555,7 +555,8 @@ router.get('/:userId', cors.corsWithOptions, async (req, res, next) => {
 
     if (req.query.key == 'EmailAdd') {
       await connection.query({
-        sql: 'delete from Email where id=' + req.params.userId,
+        // sql: 'delete from Email where id=' + req.params.userId,
+        sql: 'delete from Elec_Address where Identifier="' + req.params.userId + '"',
         timeout: 60000
       }, (err1, result) => {
         if ( err1 ) {

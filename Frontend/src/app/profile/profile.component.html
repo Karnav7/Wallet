@@ -1,5 +1,8 @@
-<mat-toolbar style="width: 100%;" class="background-primary-dark">
-    <span class="text-floral-white">WALLET</span>
+<mat-toolbar style="width: 100%;" class="background-primary-dark raised-effect3">
+    <span class="text-floral-white" [routerLink]="['/home']">WALLET</span>
+    <button mat-button [routerLink]="['/statements']">
+        <span class="text-floral-white">Monthly Statements</span>
+    </button>
     <span class="flex-spacer"></span>
     <span class="text-floral-white">{{username}}</span>
     <button mat-icon-button [matMenuTriggerFor]="toolbarMenu">
