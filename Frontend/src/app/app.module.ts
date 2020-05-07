@@ -35,14 +35,14 @@ import { TransactionService } from './services/transaction.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { HomeComponent, SendMoney } from './home/home.component';
+import { HomeComponent, SendMoney, RequestMoney } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent, SendMoney,
+    HomeComponent, SendMoney, RequestMoney,
     ProfileComponent
   ],
   imports: [

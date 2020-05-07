@@ -114,7 +114,9 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/profile']);
   }
 
-  recieveMoney() {}
+  recieveMoney() {
+    this._bottomSheet.open(RequestMoney);
+  }
 
   sendMoney() {
     this._bottomSheet.open(SendMoney);
@@ -250,6 +252,26 @@ export class SendMoney {
         }
       }
     }, 2000);
+    
+  }
+}
+
+@Component({
+  selector: 'app-requestMoney',
+  templateUrl: './requestMoney.html',
+  styleUrls: ['./home.component.scss']
+})
+export class RequestMoney {
+
+  constructor(
+    private _bottomSheetRef: MatBottomSheetRef<RequestMoney>,
+    private authService: AuthService,
+    private cookieService: CookieService,
+    private transactionService: TransactionService,
+    private router: Router,
+    public snackBar: MatSnackBar,
+    private _bottomSheet: MatBottomSheet
+  ) {
     
   }
 }

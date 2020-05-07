@@ -87,7 +87,7 @@ export class ProfileComponent implements OnInit {
 
   ssnControl = new FormControl({value: this.SSN, disabled: this.disableSSN}, [
     Validators.pattern('[0-9]*'),
-    Validators.minLength(10)
+    Validators.minLength(9)
   ]);
   nameControl = new FormControl({value: this.Name, disabled: this.disableName}, [
     Validators.minLength(3)
@@ -166,7 +166,7 @@ export class ProfileComponent implements OnInit {
     this.isEditSSN = true;
     this.ssnControl = new FormControl({value: this.user.SSN, disabled: false}, [
       Validators.pattern('[0-9]*'),
-      Validators.minLength(10)
+      Validators.minLength(9)
     ]);
   }
 
@@ -176,7 +176,7 @@ export class ProfileComponent implements OnInit {
     this.user.SSN = this.SSN;
     this.ssnControl = new FormControl({value: this.SSN, disabled: true}, [
       Validators.pattern('[0-9]*'),
-      Validators.minLength(10)
+      Validators.minLength(9)
     ]);
     console.log('user: ', this.user);
     this.authService.updateSingleUserBySSN({table: 'User_Account', key: 'SSN', value: this.SSN}).subscribe((data) => {
@@ -209,7 +209,7 @@ export class ProfileComponent implements OnInit {
     // this.SSN = this.user.SSN;
     this.ssnControl = new FormControl({value: this.user.SSN, disabled: true}, [
       Validators.pattern('[0-9]*'),
-      Validators.minLength(10)
+      Validators.minLength(9)
     ]);
   }
 
@@ -324,12 +324,14 @@ export class ProfileComponent implements OnInit {
   savePhoneNo() {
     // this.disableSSN = true;
     this.isEditPhoneNo = false;
+    let oldPhoneNo = this.user.PhoneNo;
+    console.log('oldPhNo: ', oldPhoneNo);
     this.user.PhoneNo = this.PhoneNo;
     this.phoneControl = new FormControl({value: this.PhoneNo, disabled: true}, [
       Validators.minLength(3)
     ]);
     console.log('user: ', this.user);
-    this.authService.updateSingleUserBySSN({table: 'Phone', key: 'PhoneNo', value: this.PhoneNo}).subscribe((data) => {
+    this.authService.updateSingleUserBySSN({table: 'Phone', key: 'PhoneNo', value: this.PhoneNo, OldPhoneNo: oldPhoneNo}).subscribe((data) => {
       console.log('data: ', data);
       if ( data.success === true ) {
         this.cookieService.set('MobileNo', this.PhoneNo.toString() , 30, '/', '', false);
@@ -383,7 +385,7 @@ export class ProfileComponent implements OnInit {
       console.log('yo');
       // this.emailInterface.Verified = 1;
 
-      this.authService.updateSingleEmailIDByID({table: 'Email', key: 'Verified', id: this.emailInterface.id, value: 1}).subscribe((data: any) => {
+      this.authService.verifyEmail({key: 'verifyEmail', emailId: this.emailInterface.EmailAdd}, this.user.SSN).subscribe((data: any) => {
         console.log('data', data);
   
         if ( data.success === true ) {
@@ -438,9 +440,12 @@ export class ProfileComponent implements OnInit {
 
   saveEmail() {
     this.isEditEmail = false;
+    let oldEmail = null;
     this.emailIds.forEach((email1) => {
       if ( email1.EmailAdd === this.emailInterface.EmailAdd ) {
+        oldEmail = email1.EmailAdd;
         email1.EmailAdd = this.email.trim();
+        
       }
     });
     console.log('updated emailids: ', this.emailIds);
@@ -448,7 +453,7 @@ export class ProfileComponent implements OnInit {
       Validators.pattern(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/)
     ]);
     
-    this.authService.updateSingleEmailIDByID({table: 'Email', key: 'EmailAdd', id: this.emailInterface.id, value: this.email}).subscribe((data: any) => {
+    this.authService.updateSingleEmailIDByID({table: 'Email', key: 'EmailAdd', id: this.emailInterface.id, value: this.email, OldValue: oldEmail}).subscribe((data: any) => {
       console.log('data', data);
 
       if ( data.success === true ) {
@@ -473,7 +478,6 @@ export class ProfileComponent implements OnInit {
         emailAddSnackbar.open('Click on Verify to verify new EmailId', 'Verify', {
           duration: 5000
         }).onAction().subscribe(() => {
-          
           // this.emailIds.push(this.emailInterface);
           this.authService.addNewEmail({SSN: this.user.SSN, EmailAdd: this.emailAdd.trim(), Verified: true}).subscribe((data1) => {
             console.log('data1 ', data1);

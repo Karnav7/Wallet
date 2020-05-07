@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
   ssnControl = new FormControl('', [
     Validators.required,
     Validators.pattern('[0-9]*'),
-    Validators.minLength(10)
+    Validators.minLength(9)
   ]);
   nameControl = new FormControl('', [
     Validators.required,

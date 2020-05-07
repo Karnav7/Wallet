@@ -38,7 +38,7 @@
 
                         <mat-form-field style="width: 100%;" appearance="outline">
                             <mat-label>SSN</mat-label>
-                            <input matInput type="text" value="{{user.SSN}}" (keypress)="numberOnly($event)" placeholder="Only Numbers are allowed" [(ngModel)]="SSN" [formControl]="ssnControl" [errorStateMatcher]="matcher" minlength="10" maxlength="10" pattern="[0-9]*">
+                            <input matInput type="text" value="{{user.SSN}}" (keypress)="numberOnly($event)" placeholder="Only Numbers are allowed" [(ngModel)]="SSN" [formControl]="ssnControl" [errorStateMatcher]="matcher" minlength="9" maxlength="9" pattern="[0-9]*">
                             <button mat-button mat-icon-button matSuffix *ngIf="isEditSSN === false" (click)="editSSN()">
                                 <mat-icon>edit</mat-icon>
                             </button>
@@ -49,7 +49,7 @@
                                 <mat-icon>close</mat-icon>
                             </button>
                             <mat-error *ngIf="ssnControl.hasError('minlength')">
-                                Kindly enter 10 digit SSN.
+                                Kindly enter 9 digit SSN.
                             </mat-error>
                         </mat-form-field>
                     </mat-expansion-panel>

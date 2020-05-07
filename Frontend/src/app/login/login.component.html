@@ -61,13 +61,13 @@
       <mat-card-content>
         <div fxLayout="column" fxLayoutAlign="top center" fxLayoutGap="5px">
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Kindly Enter your 10-digit SSN</mat-label>
-            <input matInput type="text" (keypress)="numberOnly($event)" placeholder="Only Numbers are allowed" [(ngModel)]="SSN" [formControl]="ssnControl" [errorStateMatcher]="matcher" minlength="10" maxlength="10" pattern="[0-9]*" required>
+            <mat-label>Kindly Enter your SSN</mat-label>
+            <input matInput type="text" (keypress)="numberOnly($event)" placeholder="Only Numbers are allowed" [(ngModel)]="SSN" [formControl]="ssnControl" [errorStateMatcher]="matcher" minlength="9" maxlength="9" pattern="[0-9]*" required>
             <mat-error *ngIf="ssnControl.hasError('required')">
               SSN field is required
             </mat-error>
             <mat-error *ngIf="ssnControl.hasError('minlength')">
-              Kindly enter 10 digit SSN.
+              Kindly enter 9 digit SSN.
             </mat-error>
           </mat-form-field>
 

@@ -86,7 +86,7 @@ router.get('/:userId', cors.corsWithOptions, async (req, res, next) => {
         console.log('userAccResult: ', userAccResult);
         // Get Phone No
         await connection.query({
-          sql: 'select * from Phone where PhoneNo=' + userAccResult[0].PhoneNo,
+          sql: 'select Phone.PhoneNo, Elec_Address.Verified from Phone Join Elec_Address on Phone.PhoneNo=Elec_Address.Identifier where Phone.PhoneNo=' + userAccResult[0].PhoneNo,
           timeout: 60000
         }, async (err2, phoneResult) => {
           if ( err2 ) {
@@ -100,7 +100,7 @@ router.get('/:userId', cors.corsWithOptions, async (req, res, next) => {
 
           console.log('phoneResult: ', phoneResult);
           await connection.query({
-            sql: 'select id, EmailAdd, Verified from Email where SSN=' + req.params.userId,
+            sql: 'select Email.id, Email.EmailAdd, Elec_Address.Verified from Email join Elec_Address on Email.EmailAdd=Elec_Address.Identifier where Email.SSN=' + req.params.userId,
             timeout: 60000
           }, async (err3, emailResult) => {
             if ( err3 ) {
@@ -166,32 +166,56 @@ router.get('/:userId', cors.corsWithOptions, async (req, res, next) => {
     }
 
     if ( req.query.key == 'EmailAdd' ) {
+
       await connection.query({
-        sql: 'insert into Email (SSN, EmailAdd, Verified) values (?, ?, ?)',
-        values: [req.body.SSN, req.body.EmailAdd, req.body.Verified],
+        sql: 'insert into Elec_Address(Identifier, Verified) values (?, ?)',
+        values: [req.body.EmailAdd, req.body.Verified],
         timeout: 60000
-      }, (err1, result) => {
-        if ( err1 ) {
-          console.log('err1: ', err1);
+      }, async (err2, elecAddRes) => {
+        if ( err2 ) {
+          console.log('err2: ', err2);
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
           res.json({success: false, msg: 'error'});
           connection.release();
-          throw err1;
+          throw err2;
         }
-  
-        console.log('result: ', result.affectedRows);
-        if ( result.affectedRows > 0 ) {
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'application/json');
-          res.json({success: true, id: result.insertId});
+
+        console.log('elecAddRes: ', elecAddRes);
+        if ( elecAddRes.affectedRows > 0 ) {
+          await connection.query({
+            sql: 'insert into Email (SSN, EmailAdd) values (?, ?)',
+            values: [req.body.SSN, req.body.EmailAdd],
+            timeout: 60000
+          }, (err1, result) => {
+            if ( err1 ) {
+              console.log('err1: ', err1);
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: false, msg: 'error'});
+              connection.release();
+              throw err1;
+            }
+      
+            console.log('result: ', result.affectedRows);
+            if ( result.affectedRows > 0 ) {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: true, id: result.insertId});
+            } else {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.json({success: false, id: null});
+            }
+            connection.release();
+          });
         } else {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
           res.json({success: false, id: null});
         }
-        connection.release();
       });
+      
     } else if ( req.query.key === 'pbaAdd' ) {
       await connection.query({
         // sql: 'update User_Account set BankID=' + req.body.BankID + ',BANumber=' + req.body.BANumber +
@@ -358,7 +382,8 @@ router.get('/:userId', cors.corsWithOptions, async (req, res, next) => {
       });
     } else if ( req.body.key == 'PhoneNo') {
       await connection.query({
-        sql: 'update ' + req.body.table + ' set ' + req.body.key + '=' + req.body.value + ' where PhoneNo=' + req.params.userId,
+        // sql: 'update ' + req.body.table + ' set ' + req.body.key + '=' + req.body.value + ' where PhoneNo=' + req.params.userId,
+        sql: 'update Elec_Address set Identifier="' + req.body.value + '" where Identifier="' + req.body.OldPhoneNo + '"',
         timeout: 60000
       }, (err1, result) => {
         if ( err1 ) {
@@ -384,7 +409,34 @@ router.get('/:userId', cors.corsWithOptions, async (req, res, next) => {
       });
     } else if (req.body.key == 'EmailAdd') {
       await connection.query({
-        sql: 'update ' + req.body.table + ' set ' + req.body.key + '="' + req.body.value + '" where id=' + req.params.userId,
+        // sql: 'update ' + req.body.table + ' set ' + req.body.key + '="' + req.body.value + '" where id=' + req.params.userId,
+        sql: 'update Elec_Address set Identifier="' + req.body.value + '" where Identifier="' + req.body.OldValue + '"',
+        timeout: 60000
+      }, (err1, result) => {
+        if ( err1 ) {
+          console.log('err1: ', err1);
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false, msg: 'error'});
+          connection.release();
+          throw err1;
+        }
+
+        console.log('result: ', result);
+        if ( result.changedRows > 0 ) {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: true});
+        } else {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json({success: false});
+        }
+        connection.release();
+      });
+    } else if ( req.body.key === 'verifyEmail' ) {
+      await connection.query({
+        sql: 'update Elec_Address set Verified=true where Identifier="' + req.body.emailId + '"',
         timeout: 60000
       }, (err1, result) => {
         if ( err1 ) {

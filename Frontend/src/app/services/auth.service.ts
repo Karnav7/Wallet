@@ -42,10 +42,10 @@ export class AuthService {
 
   login(user: User): Observable<any> {
     console.log('user', user);
-    debugger;
+    // debugger;
     return this.http.post(baseURL + 'login', user)
       .pipe(map(res => res), catchError(error => {
-        debugger;
+        // debugger;
         return this.processHTTPMsgService.handleError(error);
       }));
   }
@@ -95,6 +95,14 @@ export class AuthService {
       return this.processHTTPMsgService.handleError(error);
     }));
   }
+
+  verifyEmail(data, ssn): Observable<any> {
+    return this.http.put(baseURL + 'users/' + ssn, data)
+    .pipe(map(res => res), catchError(error => {
+      // debugger;
+      return this.processHTTPMsgService.handleError(error);
+    }));
+  } 
 
   deleteSingleEmailIDByID(data): Observable<any> {
     console.log('id: ', data.id);
